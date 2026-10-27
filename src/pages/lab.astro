@@ -1,0 +1,138 @@
+---
+// P1 laboratory (noindex): tokens, type scale, components in their states, day and night tone.
+import Base from '../layouts/Base.astro';
+import TopBar from '../components/TopBar.astro';
+import LinkArrow from '../components/LinkArrow.astro';
+import ButtonPrimary from '../components/ButtonPrimary.astro';
+import GuideTOC from '../components/GuideTOC.astro';
+import BojagiMosaic from '../components/BojagiMosaic.astro';
+import InkMap from '../components/InkMap.astro';
+import PlacePreview from '../components/PlacePreview.astro';
+import Steps from '../components/Steps.astro';
+import FAQ from '../components/FAQ.astro';
+import c from '../content/fixtures/public.ru.json';
+
+const colors = [
+  'cream', 'cream-2', 'paper', 'ink', 'ink-2', 'mute', 'jade', 'jade-ink',
+  'p-food', 'p-women', 'p-men', 'p-culture', 'p-kids', 'p-beauty', 'p-tour',
+  'night', 'night-ink', 'night-mute', 'glow', 'naver',
+];
+const scale = [
+  ['t-hero', 'Сеул без спешки'],
+  ['t-chapter', 'Перед поездкой'],
+  ['t-h3', 'Районы коротко'],
+  ['t-toc', 'Женский шопинг'],
+  ['t-lead', 'Что сделать дома, чтобы в Сеуле не тратить время.'],
+  ['t-body', 'Гайд — закрытая страница в личном кабинете. Её удобно читать с телефона.'],
+  ['t-caption', 'Букчхон, 18:40'],
+  ['t-label', 'II — Гайды'],
+  ['t-nav', 'Seoul notes'],
+];
+---
+
+<Base title="Lab" noindex>
+  <TopBar chapters={[{ id: 'tokens', title: 'Токены' }]} />
+  <main id="main" class="lab wrap">
+    <h1 class="t-chapter lab__h1">Лаборатория</h1>
+    <p class="t-caption">docs/02 § 3–7 · все компоненты и состояния · noindex</p>
+
+    <h2 class="t-label lab__h" id="tokens">Цвет</h2>
+    <ul class="sw" role="list">
+      {colors.map((n) => <li><i style={`background:var(--${n})`} /><span class="t-caption">--{n}</span></li>)}
+    </ul>
+
+    <h2 class="t-label lab__h">Шкала</h2>
+    <dl class="scale">
+      {scale.map(([cls, txt]) => (<div><dt class="t-caption">{cls}</dt><dd class={cls}>{txt}</dd></div>))}
+      <div><dt class="t-caption">t-emblem</dt><dd class="t-emblem lab__emb" lang="ko">맛 멋 결 쉼 아이 빛</dd></div>
+    </dl>
+
+    <h2 class="t-label lab__h">Действия</h2>
+    <div class="acts">
+      <LinkArrow href="#">Выбрать гайд</LinkArrow>
+      <ButtonPrimary href="#" note="Оплата из России, Казахстана и других стран">Купить в WhatsApp</ButtonPrimary>
+      <p class="t-caption">Состояния: hover — стрелка сдвигается на 4px; active — scale .985; focus-visible — 2px --jade, offset 3px (Tab).</p>
+    </div>
+
+    <h2 class="t-label lab__h">Оглавление гайдов</h2>
+    <GuideTOC />
+    <h2 class="t-label lab__h">Мозаика-боджаги</h2>
+    <BojagiMosaic />
+    <h2 class="t-label lab__h">Карта районов + шторка</h2>
+    <InkMap districts={c.prepare.districts} />
+    <h2 class="t-label lab__h">Карточка места (превью ЛК)</h2>
+    <PlacePreview place={c.inside.place} note={c.inside.naver_note} />
+    <h2 class="t-label lab__h">Шаги и FAQ</h2>
+    <Steps steps={c.buy.steps} />
+    <FAQ items={c.buy.faq} />
+  </main>
+  <section class="tone-night lab-night">
+    <div class="wrap">
+      <h2 class="t-label lab__h">Ночная глава</h2>
+      <p class="t-chapter">Сеул <em class="lab-glow">после девяти</em></p>
+      <span class="lab-line" aria-hidden="true" />
+      <p class="t-lead">Тёплая линия --glow, без вывесок и розового неона.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lab {
+    padding-top: calc(var(--bar-h) + 48px);
+    padding-bottom: 96px;
+  }
+
+  .lab__h {
+    margin: 72px 0 20px;
+    color: var(--jade-ink);
+  }
+
+  .sw {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 12px;
+  }
+
+  .sw i {
+    display: block;
+    height: 48px;
+    border: 1px solid var(--line);
+  }
+
+  .scale div {
+    display: grid;
+    gap: 6px;
+    padding-block: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .lab__emb {
+    font-size: 2.5rem;
+  }
+
+  .acts {
+    display: grid;
+    gap: 20px;
+  }
+
+  .lab-night {
+    padding-block: 24px 96px;
+    background: var(--night);
+    color: var(--night-ink);
+  }
+
+  .lab-night .lab__h {
+    color: var(--glow);
+  }
+
+  .lab-glow {
+    text-shadow: 0 0 18px rgb(233 197 138 / 0.45);
+  }
+
+  .lab-line {
+    display: block;
+    height: 1px;
+    margin-block: 28px;
+    background: var(--glow);
+  }
+</style>

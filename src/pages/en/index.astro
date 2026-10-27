@@ -1,0 +1,32 @@
+---
+// English edition is phase P7 (docs/08). Until then: a quiet holding page in the same journal style.
+import Base from '../../layouts/Base.astro';
+import TopBar from '../../components/TopBar.astro';
+import LinkArrow from '../../components/LinkArrow.astro';
+---
+
+<Base title="English edition" description="Seoul guides by Aidana and Sofia — English edition coming soon.">
+  <TopBar />
+  <main id="main" class="en wrap">
+    <p class="t-label en__label">English edition</p>
+    <h1 class="t-hero">Seoul,<br /><em>unhurried</em></h1>
+    <p class="t-lead en__lead">The English edition is being prepared. The Russian edition is available now.</p>
+    <LinkArrow href="/" hreflang="ru">Russian edition</LinkArrow>
+  </main>
+</Base>
+
+<style>
+  .en {
+    min-height: 100svh;
+    padding-top: calc(var(--bar-h) + 96px);
+  }
+
+  .en__label {
+    margin-bottom: 28px;
+    color: var(--jade-ink);
+  }
+
+  .en__lead {
+    margin-block: 24px 20px;
+  }
+</style>

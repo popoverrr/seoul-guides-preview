@@ -1,0 +1,131 @@
+/* Type roles — «Флагман + тетрадь». Prata sets every heading (one weight, no italic accents);
+   Commissioner sets text and labels in sentence case; Caveat is reserved for the authors' notes. */
+@layer type {
+  .t-display,
+  .t-head {
+    font-family: var(--f-display);
+    font-weight: 400;
+    text-wrap: balance;
+    font-kerning: normal;
+    hyphens: none;
+  }
+
+  .t-display {
+    font-size: var(--s-display);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    margin-left: -0.04em; /* optical alignment of round capitals */
+  }
+
+  .t-head {
+    font-size: var(--s-head);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-left: -0.03em;
+  }
+
+  .t-name {
+    font-family: var(--f-display);
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+
+  .t-lead {
+    font-size: var(--s-lead);
+    line-height: 1.35;
+    max-width: 30ch;
+    text-wrap: pretty;
+  }
+
+  .t-body {
+    font-size: var(--s-body);
+    line-height: 1.55;
+    max-width: 62ch;
+    text-wrap: pretty;
+    hyphens: auto;
+  }
+
+  .t-small {
+    font-size: var(--s-small);
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+
+  .t-hand {
+    font-family: var(--f-hand);
+    font-size: var(--s-hand);
+    font-weight: 500;
+    line-height: 1.05;
+    color: var(--hand);
+  }
+
+  .t-emblem {
+    font-family: var(--f-ko);
+    font-weight: 200;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .t-num {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .tone-night .t-small {
+    color: var(--night-mute);
+  }
+
+  .tone-night .t-hand {
+    color: var(--glow);
+  }
+}
+
+/* legacy classes from the first build, re-set in the new voice: no tracked capitals, no italic accents */
+@layer type {
+  .t-hero {
+    font-family: var(--f-display);
+    font-size: var(--s-display);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .t-chapter {
+    font-family: var(--f-display);
+    font-size: var(--s-head);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .t-h3,
+  .t-toc {
+    font-family: var(--f-display);
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  .t-hero em,
+  .t-chapter em,
+  .t-h3 em,
+  .t-head em {
+    font-style: normal;
+  }
+
+  .t-caption,
+  .t-label,
+  .t-nav,
+  .t-roman {
+    font-size: var(--s-small);
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-2);
+  }
+
+  .tone-night :is(.t-caption, .t-label, .t-roman) {
+    color: var(--night-mute);
+  }
+}

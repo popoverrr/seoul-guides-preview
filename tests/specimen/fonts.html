@@ -1,0 +1,15 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Bona+Nova:ital,wght@0,400;1,400&family=Brygada+1918:ital,wght@0,400..700;1,400&family=Piazzolla:opsz,wght@8..30,300..700&family=Literata:opsz,wght@7..72,300..600&family=Old+Standard+TT&family=Gabriela&family=Spectral:wght@300;400&family=Geologica:wght,SHRP@300..600,0..100&family=Commissioner:wght,FLAR@300..600,0..100&family=Golos+Text:wght@400..600&family=Onest:wght@400..600&family=Caveat:wght@400..600&family=Bad+Script&family=Marck+Script&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#E9E2D6;color:#1A1916;font:16px sans-serif;width:1400px}
+.row{display:grid;grid-template-columns:150px 1fr 1fr;gap:24px;padding:18px 24px;border-bottom:1px solid #0002;align-items:center}
+.n{font:12px monospace;color:#555}.d{font-size:58px;line-height:1}.t{font-size:17px;line-height:1.5}
+</style></head><body>
+<script>
+const disp=[['Prata','400'],['Bona Nova','400'],['Brygada 1918','400'],['Piazzolla','400'],['Literata','350'],['Old Standard TT','400'],['Gabriela','400'],['Spectral','300']];
+const body=document.body;
+for(const [f,w] of disp){body.insertAdjacentHTML('beforeend',`<div class=row><div class=n>${f}</div><div class=d style="font-family:'${f}';font-weight:${w}">Сеул без спешки</div><div class=t style="font-family:'${f}'">Гайды Айданы и Софии: где поесть, что купить и куда пойти вечером. 94 места, 11 районов — 3 000 ₽.</div></div>`)}
+const ui=[['Geologica','font-variation-settings:\"SHRP\" 60'],['Commissioner','font-variation-settings:\"FLAR\" 100'],['Golos Text',''],['Onest','']];
+for(const [f,s] of ui){body.insertAdjacentHTML('beforeend',`<div class=row><div class=n>${f}</div><div class=t style="font-family:'${f}';${s};font-size:15px">SEOUL FOOD 맛 · Состав: Сочхон, Букчхон, Сонсу, Ханнам · Объём: 94 места · Формат: страница в кабинете</div><div class=t style="font-family:'${f}';${s}">Купить в WhatsApp — оплата из России, Казахстана и других стран</div></div>`)}
+for(const f of ['Caveat','Bad Script','Marck Script']){body.insertAdjacentHTML('beforeend',`<div class=row><div class=n>${f}</div><div style="font-family:'${f}';font-size:30px;color:#2E6B3F">мы были здесь в октябре — бронируйте заранее!</div><div></div></div>`)}
+</script></body></html>

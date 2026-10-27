@@ -1,0 +1,86 @@
+{
+  "cover": {
+    "ratio": "9:16",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "6343701b-0ecb-432b-a4f6-1c22c4cdcf83",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "prepare": {
+    "ratio": "4:5",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "47f56544-10dd-45a8-93eb-acb3d1503182",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "cover-wide": {
+    "ratio": "16:9",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "e52b07be-513d-4e35-b4b4-76143a899316",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "guide-seoul-food": {
+    "ratio": "4:5",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "ef497296-5a90-4a80-821f-3282c483c6ba",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "guide-shopping-women": {
+    "ratio": "4:5",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "3397665f-7c4a-4cd0-b244-f3bec4543594",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "guide-shopping-men": {
+    "ratio": "4:5",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "bd6162e9-929f-4065-a24a-97bffa901a2b",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "guide-culture": {
+    "ratio": "4:5",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "8b959bce-c965-4bb3-9c15-8dfb2493e0fa",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "guide-kids": {
+    "ratio": "4:5",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "f3734be3-22aa-4631-a03d-995150137e70",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "guide-beauty": {
+    "ratio": "4:5",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "292a533e-a366-45d5-a204-7fa338b442e6",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "inside-place": {
+    "ratio": "4:3",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "d405c5ac-8006-4fc4-aee9-f47be353110d",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "night": {
+    "ratio": "9:16",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "e8e37636-835c-40e3-a58c-0404a19466ec",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "tour-cover": {
+    "ratio": "9:16",
+    "source": "higgsfield gpt_image_2_5",
+    "job": "ae59504b-a481-4bb1-980a-124b4774b934",
+    "rights": "own",
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  }
+}

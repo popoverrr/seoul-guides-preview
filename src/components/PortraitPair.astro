@@ -1,0 +1,71 @@
+---
+// Two portraits: a large 4:5 and a smaller one shifted down (magazine layout), captions (docs/02 § 7).
+import Photo from './Photo.astro';
+
+interface Props {
+  people: { name: string; role: string; caption: string }[];
+}
+
+const { people } = Astro.props;
+const [a, b] = people;
+---
+
+<div class="pair">
+  {
+    a && (
+      <figure class="pair__a">
+        <Photo slot="author-1" ratio="4 / 5" alt={a.name} brief="портрет автора, естественный свет" sizes="(min-width: 1024px) 30vw, 62vw" />
+        <figcaption class="t-caption">{a.caption}</figcaption>
+      </figure>
+    )
+  }
+  {
+    b && (
+      <figure class="pair__b">
+        <Photo slot="author-2" ratio="4 / 5" alt={b.name} brief="портрет автора" sizes="(min-width: 1024px) 20vw, 42vw" />
+        <figcaption class="t-caption">{b.caption}</figcaption>
+      </figure>
+    )
+  }
+</div>
+<dl class="names">
+  {
+    people.map((p) => (
+      <div>
+        <dt class="t-h3">{p.name}</dt>
+        <dd class="t-caption">{p.role}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .pair {
+    display: grid;
+    grid-template-columns: 62fr 38fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .pair__b {
+    margin-top: 42%;
+  }
+
+  figcaption {
+    margin-top: 8px;
+    text-align: right;
+  }
+
+  .names {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 36px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+
+  .names dd {
+    margin-top: 6px;
+  }
+</style>

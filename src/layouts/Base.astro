@@ -1,0 +1,54 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/type.css';
+import { BRAND } from '../lib/brand';
+import { altPath, localeFrom } from '../lib/i18n';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  /** cover = page starts with a full-bleed photo, the top bar is white over it */
+  cover?: boolean;
+}
+
+const { title, description = '', noindex = false, cover = false } = Astro.props;
+const locale = localeFrom(Astro.url);
+const fullTitle = title ? `${title} — ${BRAND}` : BRAND;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang={locale} data-cover={cover ? '' : undefined}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    {(noindex || import.meta.env.PUBLIC_PREVIEW) && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="ru" href={new URL(altPath(Astro.url, 'ru'), Astro.site)} />
+    <link rel="alternate" hreflang="en" href={new URL(altPath(Astro.url, 'en'), Astro.site)} />
+    <meta name="theme-color" content="#e9e2d6" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- the hero title (Prata, 15 KB) is the LCP and the only preload; Commissioner swaps in over metric-matched Arial (D-034) -->
+    <link rel="preload" href="/fonts/prata.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
+    <script is:inline>
+      // motion is opt-in: without JS (or with reduced motion) everything is visible from the start
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-motion');
+    </script>
+    <ClientRouter fallback="animate" />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+    <script>
+      import { boot } from '../motion/boot';
+      boot();
+    </script>
+  </body>
+</html>

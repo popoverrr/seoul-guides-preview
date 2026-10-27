@@ -1,0 +1,241 @@
+---
+// Plain bar: wordmark in Prata, RU / EN, menu. White over the cover photo, ink on plaster after it
+// (html[data-cover] + [data-past-cover], motion/topbar.ts). Menu is a native <dialog> (C10).
+import { BRAND_TITLE } from '../lib/brand';
+import { altPath, localeFrom, t } from '../lib/i18n';
+
+interface Props {
+  chapters?: { id: string; title: string }[];
+}
+
+const { chapters = [] } = Astro.props;
+const locale = localeFrom(Astro.url);
+const home = locale === 'en' ? '/en/' : '/';
+---
+
+<header class="bar" data-bar>
+  <a class="bar__brand" href={home}>{BRAND_TITLE}</a>
+  <nav class="bar__lang" aria-label="Язык">
+    <a href={altPath(Astro.url, 'ru')} aria-current={locale === 'ru' ? 'true' : undefined} hreflang="ru" lang="ru">RU</a>
+    <a href={altPath(Astro.url, 'en')} aria-current={locale === 'en' ? 'true' : undefined} hreflang="en" lang="en">EN</a>
+  </nav>
+  <button class="bar__menu" type="button" aria-haspopup="dialog" aria-controls="menu" data-menu-open>
+    {t(locale, 'menu')}
+  </button>
+  <span class="bar__progress" aria-hidden="true"><span data-chapter-progress></span></span>
+</header>
+
+<dialog id="menu" class="menu" aria-label={t(locale, 'menu')} data-menu>
+  <div class="menu__top">
+    <span class="bar__brand">{BRAND_TITLE}</span>
+    <button class="menu__close" type="button" data-menu-close>{t(locale, 'close')}</button>
+  </div>
+  <nav aria-label="Разделы">
+    <ul class="menu__list" role="list">
+      {
+        chapters.map((c, i) => (
+          <li style={`--i:${i}`}>
+            <a href={`${home}#${c.id}`} data-menu-link>
+              {c.title}
+            </a>
+          </li>
+        ))
+      }
+      <li style={`--i:${chapters.length}`}>
+        <a href={locale === 'en' ? '/en/login/' : '/login/'}>{t(locale, 'login')}</a>
+      </li>
+    </ul>
+  </nav>
+  <p class="menu__foot t-small">{t(locale, 'contacts_todo')}</p>
+</dialog>
+
+<style>
+  .bar {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: calc(var(--bar-h) + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) max(var(--gutter), env(safe-area-inset-right)) 0
+      max(var(--gutter), env(safe-area-inset-left));
+    color: var(--ink);
+    background: var(--plaster);
+    transition:
+      background-color var(--d-base) var(--ease-tea),
+      color var(--d-base) var(--ease-tea);
+  }
+
+  :global(html[data-cover]:not([data-past-cover])) .bar {
+    background: transparent;
+    color: var(--on-photo);
+  }
+
+  :global(html[data-night]) .bar {
+    background: var(--night);
+    color: var(--night-ink);
+  }
+
+  .bar__brand {
+    margin-right: auto;
+    padding-block: 12px;
+    font-family: var(--f-display);
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .bar__lang {
+    display: flex;
+    gap: 2px;
+  }
+
+  .bar__lang a,
+  .bar__menu {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 8px;
+    font-size: 0.9375rem;
+  }
+
+  .bar__lang a:not([aria-current]) {
+    color: var(--ink-2);
+  }
+
+  :global(html[data-cover]:not([data-past-cover])) .bar__lang a:not([aria-current]) {
+    color: rgb(255 255 255 / 0.8);
+  }
+
+  :global(html[data-night]) .bar__lang a:not([aria-current]) {
+    color: var(--night-mute);
+  }
+
+  .bar__lang a[aria-current] {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+  }
+
+  .bar__menu {
+    margin-right: -8px;
+    font-weight: 500;
+  }
+
+  .bar__progress {
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity var(--d-base) var(--ease-tea);
+  }
+
+  :global(html[data-past-cover]) .bar__progress {
+    opacity: 1;
+  }
+
+  .bar__progress span {
+    display: block;
+    height: 100%;
+    background: var(--green);
+    transform-origin: left;
+    transform: scaleX(var(--progress, 0));
+  }
+
+  :global(html[data-night]) .bar__progress span {
+    background: var(--glow);
+  }
+
+  /* C10 */
+  .menu {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: env(safe-area-inset-top) max(var(--gutter), env(safe-area-inset-right)) env(safe-area-inset-bottom)
+      max(var(--gutter), env(safe-area-inset-left));
+    border: 0;
+    background: var(--plaster);
+    color: var(--ink);
+    transform: translateY(-100%);
+    transition:
+      transform 360ms var(--ease-turn),
+      overlay 360ms allow-discrete,
+      display 360ms allow-discrete;
+  }
+
+  .menu[open] {
+    display: flex;
+    flex-direction: column;
+    transform: none;
+    transition-duration: 520ms;
+  }
+
+  @starting-style {
+    .menu[open] {
+      transform: translateY(-100%);
+    }
+  }
+
+  .menu::backdrop {
+    background: transparent;
+  }
+
+  .menu__top {
+    display: flex;
+    align-items: center;
+    height: var(--bar-h);
+  }
+
+  .menu__close {
+    min-height: 44px;
+    margin-right: -8px;
+    padding: 0 8px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .menu__list {
+    margin-top: 40px;
+  }
+
+  .menu__list a {
+    display: block;
+    padding-block: 10px;
+    font-family: var(--f-display);
+    font-size: clamp(2.25rem, 1.6rem + 3vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .menu[open] .menu__list li {
+    animation: menu-line 700ms var(--ease-tea) both;
+    animation-delay: calc(160ms + var(--i, 0) * 50ms);
+  }
+
+  @keyframes menu-line {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
+  .menu__foot {
+    margin-top: auto;
+    padding-block: 24px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu,
+    .menu[open] {
+      transform: none;
+      transition: opacity 150ms linear;
+    }
+
+    .menu[open] .menu__list li {
+      animation: none;
+    }
+  }
+</style>

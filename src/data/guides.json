@@ -1,0 +1,113 @@
+[
+  {
+    "slug": "seoul-food",
+    "emblem": "맛",
+    "roman": "MAT",
+    "patch": "--p-food",
+    "title_ru": "Seoul Food",
+    "subtitle_ru": "Кафе, рестораны и Nightlife",
+    "title_en": "Seoul Food",
+    "subtitle_en": "Cafés, restaurants and nightlife",
+    "aria_ru": "Гайд Seoul Food",
+    "has_night": true,
+    "price": "TODO(client)",
+    "label_ru": "Сочхон, Букчхон, Ыльджиро, Ённам, Хапчон, Хондэ, Сонсу, Ханнам, Итхэвон, Хэбанчхон, Каннам",
+    "volume_ru": "94 места в 11 районах",
+    "districts": [
+      "seochon",
+      "euljiro",
+      "hongdae",
+      "seongsu",
+      "hannam",
+      "gangnam"
+    ]
+  },
+  {
+    "slug": "shopping-women",
+    "emblem": "멋",
+    "roman": "MEOT",
+    "patch": "--p-women",
+    "title_ru": "Женский шопинг",
+    "subtitle_ru": "Концепт-сторы, корейские дизайнеры, винтаж",
+    "title_en": "Shopping for women",
+    "subtitle_en": "Concept stores, Korean designers, vintage",
+    "aria_ru": "Гайд «Женский шопинг»",
+    "has_night": false,
+    "price": "TODO(client)",
+    "label_ru": "Сочхон, Букчхон, Хапчон, Ённам, Сонсу, Ханнам, Гаросугиль и Синса, Тосан и Апкучжон",
+    "volume_ru": "88 магазинов в 9 районах",
+    "districts": [
+      "seochon",
+      "hongdae",
+      "seongsu",
+      "hannam",
+      "gangnam"
+    ]
+  },
+  {
+    "slug": "shopping-men",
+    "emblem": "결",
+    "roman": "GYEOL",
+    "patch": "--p-men",
+    "title_ru": "Мужской шопинг",
+    "subtitle_ru": "Мастерские, марки и материалы",
+    "title_en": "Shopping for men",
+    "subtitle_en": "Workshops, labels and materials",
+    "aria_ru": "Гайд «Мужской шопинг»",
+    "has_night": false,
+    "price": "TODO(client)",
+    "label_ru": "Состав появится, когда авторы закончат файл",
+    "volume_ru": "в работе",
+    "districts": []
+  },
+  {
+    "slug": "culture",
+    "emblem": "쉼",
+    "roman": "SHIM",
+    "patch": "--p-culture",
+    "title_ru": "Культура и досуг",
+    "subtitle_ru": "Районы, где остановиться, мастер-классы",
+    "title_en": "Culture and leisure",
+    "subtitle_en": "Districts, where to stay, workshops",
+    "aria_ru": "Гайд «Культура и досуг»",
+    "has_night": true,
+    "price": "TODO(client)",
+    "label_ru": "Районы, где остановиться, мастер-классы, вечерний досуг",
+    "volume_ru": "в работе",
+    "districts": [
+      "seochon"
+    ]
+  },
+  {
+    "slug": "kids",
+    "emblem": "아이",
+    "roman": "AI",
+    "patch": "--p-kids",
+    "title_ru": "Сеул с детьми",
+    "subtitle_ru": "Досуг, кафе и рестораны для детей, активности",
+    "title_en": "Seoul with kids",
+    "subtitle_en": "Leisure, kid-friendly cafés, activities",
+    "aria_ru": "Гайд «Сеул с детьми»",
+    "has_night": false,
+    "price": "TODO(client)",
+    "label_ru": "Состав появится, когда авторы закончат файл",
+    "volume_ru": "в работе",
+    "districts": []
+  },
+  {
+    "slug": "beauty",
+    "emblem": "빛",
+    "roman": "BIT",
+    "patch": "--p-beauty",
+    "title_ru": "Бьюти",
+    "subtitle_ru": "Клиники и процедуры, Olive Young, салоны, spa",
+    "title_en": "Beauty",
+    "subtitle_en": "Clinics and treatments, Olive Young, salons, spa",
+    "aria_ru": "Гайд «Бьюти»",
+    "has_night": false,
+    "price": "TODO(client)",
+    "label_ru": "Процедуры, Olive Young, офф-бьюти, макияж, wellness и spa, must buy",
+    "volume_ru": "7 разделов",
+    "districts": []
+  }
+]

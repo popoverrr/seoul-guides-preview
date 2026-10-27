@@ -1,0 +1,460 @@
+---
+// Public guide page in the «Флагман + тетрадь» world (D-034): cover → the guide's museum label →
+// contents as paper tiles of districts → one opened place (Seoul Food) → price tag and «Купить».
+// Only section titles here; places live behind the API (docs/06 § 1).
+import Base from '../../layouts/Base.astro';
+import TopBar from '../../components/TopBar.astro';
+import Photo from '../../components/Photo.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import Note from '../../components/Note.astro';
+import PlacePreview from '../../components/PlacePreview.astro';
+import LinkArrow from '../../components/LinkArrow.astro';
+import ButtonPrimary from '../../components/ButtonPrimary.astro';
+import FAQ from '../../components/FAQ.astro';
+import Footer from '../../components/Footer.astro';
+import guides from '../../data/guides.json';
+import sections from '../../data/guide-sections.json';
+import c from '../../content/fixtures/public.ru.json';
+import { nb } from '../../lib/typo';
+import { waLink } from '../../lib/brand';
+
+export function getStaticPaths() {
+  return guides.map((g) => ({ params: { slug: g.slug } }));
+}
+
+type Toc = { count_note: string; sections: { title: string; ko: string; note: string; night: boolean }[] };
+const { slug } = Astro.params;
+const i = guides.findIndex((g) => g.slug === slug);
+const g = guides[i]!;
+const toc = (sections as unknown as Record<string, Toc>)[g.slug];
+const next = guides[(i + 1) % guides.length]!;
+const nightCount = toc?.sections.filter((s) => s.night).length ?? 0;
+const hasPreview = g.slug === c.inside.place.guide;
+---
+
+<Base cover title={g.title_ru} description={`${g.title_ru}: ${g.subtitle_ru}`}>
+  <TopBar />
+  <main id="main" style={`--patch:var(${g.patch})`}>
+    <section class="gcover" data-cover-section aria-labelledby="g-title">
+      <div class="gcover__img" transition:name={`guide-photo-${g.slug}`}>
+        <Photo slot={`guide-${g.slug}`} ratio="9 / 16" ratioDesktop="16 / 9" alt="" tone="dark" fill eager />
+      </div>
+      <div class="gcover__scrim" aria-hidden="true"></div>
+      <div class="gcover__text wrap">
+        <span class="gcover__emblem t-emblem" lang="ko" aria-hidden="true" transition:name={`guide-emblem-${g.slug}`}>{g.emblem}</span>
+        <h1 class="t-display gcover__title" id="g-title">{g.title_ru}</h1>
+        <p class="gcover__lead">{nb(g.subtitle_ru)}</p>
+        <Note tone="photo" rotate={-5} class="gcover__sign" instant>Айдана и София</Note>
+      </div>
+    </section>
+
+    <!-- the guide's museum label, laid over the bottom of the cover -->
+    <div class="wrap">
+      <dl class="glabel">
+        <div class="glabel__head">
+          <span class="glabel__tag" aria-hidden="true"></span>
+          <span class="t-name">{g.title_ru}</span>
+          <span class="glabel__ko" lang="ko" aria-hidden="true">{g.emblem}</span>
+        </div>
+        <div><dt>Состав</dt><dd>{g.label_ru}</dd></div>
+        <div><dt>Объём</dt><dd>{g.volume_ru}</dd></div>
+        <div><dt>Формат</dt><dd>страница в личном кабинете, доступ навсегда, два устройства</dd></div>
+      </dl>
+    </div>
+
+    <section class="gsec wrap" aria-labelledby="toc-title">
+      <SectionHead id="toc-title" title="Что внутри" lead={toc?.count_note ? `${toc.count_note}. Разделы открываются в личном кабинете после покупки.` : undefined}>
+        {nightCount > 0 && <Note slot="note" mark="arrow-down" rotate={-3}>янтарные — на вечер</Note>}
+      </SectionHead>
+      {
+        toc && toc.sections.length > 0 ? (
+          <ul class="tiles" role="list">
+            {toc.sections.map((s) => (
+              <li class:list={['tile', { 'tile--night': s.night }]}>
+                {s.ko && (
+                  <span class="tile__ko" lang="ko" aria-hidden="true">
+                    {s.ko}
+                  </span>
+                )}
+                {s.night && <span class="tile__badge">вечер</span>}
+                <span class="tile__name">{s.title}</span>
+                {s.note && <span class="tile__note">{nb(s.note)}</span>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="tiles-empty">
+            <p class="t-lead">Авторы заканчивают этот гайд — оглавление появится здесь.</p>
+            <Note rotate={-3}>напишите нам — сообщим первыми</Note>
+          </div>
+        )
+      }
+    </section>
+
+    {
+      hasPreview && (
+        <section class="gsec gsec--tone" aria-labelledby="inside-title">
+          <div class="wrap">
+            <SectionHead id="inside-title" title="Так выглядит место" lead={c.inside.lead} />
+            <div class="gpreview">
+              <PlacePreview place={c.inside.place} note={c.inside.naver_note} hand={c.inside.note} />
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="gsec wrap gbuy" aria-labelledby="buy-title">
+      <SectionHead id="buy-title" title="Как купить" />
+      <div class="tag">
+        <span class="tag__hole" aria-hidden="true"></span>
+        <p class="tag__price t-num">цена — скоро</p>
+        <p class="tag__note">Оплата из России, Казахстана и других стран. Доступ навсегда, обновления бесплатно.</p>
+      </div>
+      <ButtonPrimary
+        class="gbuy__cta"
+        href={waLink(`Здравствуйте! Хочу купить гайд «${g.title_ru}» (RU)`)}
+        data-lead="guide"
+        data-lead-slug={g.slug}
+      >
+        Купить в WhatsApp
+      </ButtonPrimary>
+      <div class="gbuy__faq">
+        <h3 class="t-name">Вопросы</h3>
+        <FAQ items={c.buy.faq} />
+      </div>
+    </section>
+
+    <nav class="gnext wrap" aria-label="Следующий гайд">
+      <a href={`/guides/${next.slug}/`} class="gnext__link" style={`--next:var(${next.patch})`}>
+        <span class="gnext__img">
+          <Photo slot={`guide-${next.slug}`} ratio="1 / 1" alt="" sizes="96px" />
+        </span>
+        <span>
+          <span class="t-small">Следующий гайд</span>
+          <span class="t-name gnext__name">{next.title_ru}</span>
+        </span>
+        <span class="t-emblem gnext__emblem" lang="ko" aria-hidden="true">{next.emblem}</span>
+      </a>
+      <LinkArrow href="/#guides">Все гайды</LinkArrow>
+    </nav>
+  </main>
+  <Footer note={c.footer.note} legal={c.footer.legal} />
+</Base>
+
+<style>
+  .gcover {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 92svh;
+    color: var(--on-photo);
+    background: #2a2824;
+    overflow: clip;
+  }
+
+  .gcover__img {
+    position: absolute;
+    inset: 0;
+  }
+
+  .gcover__scrim {
+    position: absolute;
+    inset: auto 0 0;
+    height: 70%;
+    background: linear-gradient(transparent, rgb(10 10 8 / 0.6));
+  }
+
+  .gcover__text {
+    position: relative;
+    padding-bottom: 88px;
+  }
+
+  .gcover__emblem {
+    display: block;
+    font-size: clamp(5rem, 26vw, 10rem);
+    font-weight: 100;
+  }
+
+  .gcover__title {
+    margin-top: 4px;
+  }
+
+  .gcover__lead {
+    margin-top: 16px;
+    max-width: 28ch;
+    font-size: var(--s-body);
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  :global(.gcover__sign) {
+    margin-top: 14px;
+  }
+
+  /* the museum label over the cover */
+  .glabel {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 10px;
+    margin: -56px 0 0;
+    padding: 20px 20px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-l);
+    font-size: var(--s-small);
+    line-height: 1.45;
+  }
+
+  .glabel__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .glabel__tag {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--patch);
+  }
+
+  .glabel__ko {
+    margin-left: auto;
+    font-family: var(--f-ko);
+    font-size: 1.75rem;
+    font-weight: 200;
+    color: var(--ink-2);
+  }
+
+  .glabel div:not(.glabel__head) {
+    display: grid;
+    grid-template-columns: 5em 1fr;
+    gap: 10px;
+  }
+
+  .glabel dt {
+    color: var(--ink-2);
+  }
+
+  /* sections */
+  .gsec {
+    padding-top: var(--section);
+  }
+
+  .gsec--tone {
+    margin-top: var(--section);
+    padding-block: calc(var(--section) * 0.85);
+    background: var(--plaster-2);
+  }
+
+  /* contents: paper tiles of districts */
+  .tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .tile {
+    position: relative;
+    display: grid;
+    align-content: end;
+    gap: 6px;
+    min-height: 132px;
+    padding: 16px;
+    overflow: hidden;
+    background: var(--paper);
+    border-radius: var(--r-m);
+  }
+
+  .tile__ko {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    font-family: var(--f-ko);
+    font-size: 1.875rem;
+    font-weight: 200;
+    line-height: 1;
+    color: rgb(26 25 22 / 0.16);
+    white-space: nowrap;
+  }
+
+  .tile__name {
+    position: relative;
+    font-family: var(--f-display);
+    font-size: 1.3125rem;
+    line-height: 1.05;
+  }
+
+  .tile__note {
+    position: relative;
+    font-size: var(--s-small);
+    line-height: 1.35;
+    color: var(--ink-2);
+  }
+
+  .tile--night {
+    background: #16150f;
+    color: #f4efe6;
+  }
+
+  .tile--night .tile__ko {
+    color: rgb(255 181 71 / 0.28);
+  }
+
+  .tile--night .tile__note {
+    color: #c9c1b4;
+  }
+
+  .tile__badge {
+    position: relative;
+    justify-self: start;
+    padding: 3px 9px;
+    border-radius: var(--r-pill);
+    background: #ffb547;
+    color: #16150f;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .tiles-empty {
+    display: grid;
+    gap: 14px;
+    margin-top: 20px;
+    padding: 24px 20px;
+    background: var(--paper);
+    border-radius: var(--r-l);
+  }
+
+  .gpreview {
+    margin-top: 28px;
+  }
+
+  /* price tag: a paper tag with a punched hole */
+  .tag {
+    position: relative;
+    margin-top: 24px;
+    padding: 22px 22px 22px 56px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-l);
+  }
+
+  .tag__hole {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--plaster);
+  }
+
+  .tag__price {
+    font-family: var(--f-display);
+    font-size: clamp(2rem, 1.6rem + 2vw, 3rem);
+    line-height: 1;
+  }
+
+  .tag__note {
+    margin-top: 10px;
+    font-size: var(--s-small);
+    color: var(--ink-2);
+  }
+
+  :global(.gbuy__cta) {
+    margin-top: 16px;
+  }
+
+  .gbuy__faq {
+    margin-top: 44px;
+  }
+
+  .gbuy__faq .t-name {
+    margin-bottom: 12px;
+  }
+
+  /* next guide */
+  .gnext {
+    display: grid;
+    gap: 18px;
+    padding-block: var(--section) 56px;
+  }
+
+  .gnext__link {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px 12px 12px;
+    background: var(--paper);
+    border-radius: var(--r-l);
+    transition: transform 240ms var(--ease-tea);
+  }
+
+  .gnext__link:active {
+    transform: scale(0.985);
+  }
+
+  .gnext__img :global(.photo) {
+    border-radius: var(--r-m);
+  }
+
+  .gnext__name {
+    display: block;
+    margin-top: 2px;
+  }
+
+  .gnext__emblem {
+    font-size: 2.25rem;
+    color: var(--next);
+  }
+
+  @media (min-width: 1024px) {
+    .gcover__text {
+      padding-bottom: 120px;
+    }
+
+    .glabel {
+      max-width: 640px;
+      margin-top: -80px;
+      margin-left: auto;
+    }
+
+    .tiles {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .gpreview {
+      max-width: 560px;
+    }
+
+    .gbuy {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 0 64px;
+    }
+
+    .gbuy > :global(*) {
+      grid-column: 2;
+    }
+
+    .gbuy > :global(.sh) {
+      grid-column: 1;
+      grid-row: 1 / span 4;
+      align-self: start;
+    }
+
+    .gnext {
+      grid-template-columns: minmax(0, 560px) auto;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+</style>

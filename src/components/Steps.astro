@@ -1,0 +1,69 @@
+---
+// Three lines: Roman numeral (Display 200) · title · text; hairlines between (docs/02 § 7).
+import { nb } from '../lib/typo';
+
+interface Props {
+  steps: { title: string; text: string }[];
+}
+
+const { steps } = Astro.props;
+const roman = ['I', 'II', 'III', 'IV', 'V'];
+---
+
+<ol class="steps" role="list" data-reveal="rows">
+  {
+    steps.map((s, i) => (
+      <li class="steps__row">
+        <span class="steps__num" aria-hidden="true">
+          {roman[i]}
+        </span>
+        <div>
+          <h3 class="steps__title">{s.title}</h3>
+          <p class="steps__text t-body">{nb(s.text)}</p>
+        </div>
+        <span class="steps__seam toc__seam" aria-hidden="true" />
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps {
+    border-top: 1px solid var(--line);
+  }
+
+  .steps__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: 12px;
+    padding-block: 22px 24px;
+  }
+
+  .steps__seam {
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: var(--line);
+    transform-origin: left;
+  }
+
+  .steps__num {
+    font-family: var(--f-display);
+    font-size: 2.25rem;
+    font-weight: 200;
+    font-stretch: 80%;
+    line-height: 1;
+  }
+
+  .steps__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .steps__text {
+    margin-top: 6px;
+    color: var(--ink-2);
+  }
+</style>

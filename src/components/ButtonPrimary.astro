@@ -1,0 +1,55 @@
+---
+// One per screen: a green pill, 52px tall (D-035).
+interface Props {
+  href: string;
+  note?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, note, class: cls = '', ...rest } = Astro.props;
+---
+
+<div class:list={['cta', cls]}>
+  <a class="cta__btn" href={href} {...rest}><slot /></a>
+  {note && <p class="cta__note t-caption">{note}</p>}
+</div>
+
+<style>
+  .cta__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 52px;
+    padding-inline: 28px;
+    border-radius: var(--r-pill);
+    background: var(--green);
+    color: var(--green-ink);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    transition: transform 240ms var(--ease-tea);
+  }
+
+  .cta__btn:active {
+    transform: scale(0.985);
+    transition-duration: 120ms;
+  }
+
+  .cta__note {
+    margin-top: 12px;
+  }
+
+  :global(.tone-night) .cta__btn {
+    background: var(--night-ink);
+    color: var(--night);
+  }
+
+  @media (min-width: 1024px) {
+    .cta__btn {
+      width: auto;
+      min-width: 320px;
+    }
+  }
+</style>

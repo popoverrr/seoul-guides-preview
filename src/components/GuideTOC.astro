@@ -1,0 +1,119 @@
+---
+// Magazine contents of guides (docs/02 § 7 GuideTOC): emblem · title · [romanization], row ≥ 64px.
+import guides from '../data/guides.json';
+import { localeFrom, t } from '../lib/i18n';
+import { nb } from '../lib/typo';
+
+const locale = localeFrom(Astro.url);
+const base = locale === 'en' ? '/en' : '';
+---
+
+<ol class="toc" role="list" data-reveal="rows">
+  {
+    guides.map((g, i) => (
+      <li class="toc__row" style={`--patch:var(${g.patch})`}>
+        <a class="toc__link" href={`${base}/guides/${g.slug}/`} data-cursor={t(locale, 'open')}>
+          <span class="toc__n t-roman">{String(i + 1).padStart(2, '0')}</span>
+          <span class:list={['toc__emblem t-emblem', { 'toc__emblem--wide': [...g.emblem].length > 1 }]} lang="ko" aria-hidden="true">
+            {g.emblem}
+          </span>
+          <span class="toc__text">
+            <span class="toc__title t-toc">{locale === 'en' ? g.title_en : g.title_ru}</span>
+            <span class="toc__sub t-caption">{nb(locale === 'en' ? g.subtitle_en : g.subtitle_ru)}</span>
+          </span>
+          <span class="toc__roman t-roman" aria-hidden="true">
+            [{g.roman}]
+          </span>
+        </a>
+        <span class="toc__seam" aria-hidden="true" />
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .toc {
+    border-top: 1px solid var(--line);
+  }
+
+  .toc__row {
+    position: relative;
+  }
+
+  .toc__seam {
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: var(--line);
+    transform-origin: left;
+  }
+
+  .toc__link {
+    display: grid;
+    grid-template-columns: 1.6em 3.4rem 1fr auto;
+    align-items: center;
+    column-gap: 12px;
+    min-height: 76px;
+    padding-block: 14px;
+    transition: transform 240ms var(--ease-tea);
+  }
+
+  .toc__link:active {
+    transform: scale(0.985);
+    transition-duration: 120ms;
+  }
+
+  .toc__n {
+    color: var(--mute);
+    align-self: start;
+    padding-top: 0.55em;
+  }
+
+  .toc__emblem {
+    font-size: 2.125rem;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .toc__emblem--wide {
+    font-size: 1.5rem;
+    letter-spacing: -0.04em;
+  }
+
+  .toc__text {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .toc__title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 7px;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--d-quick) var(--ease-tea);
+  }
+
+  /* the guide's patch colour lives only in this seam-underline (docs/02 § 3) */
+  @media (hover: hover) {
+    .toc__link:hover .toc__title {
+      text-decoration-color: var(--patch);
+    }
+  }
+
+  .toc__roman {
+    align-self: start;
+    padding-top: 0.55em;
+    color: var(--mute);
+  }
+
+  @media (max-width: 374px) {
+    .toc__link {
+      grid-template-columns: 3rem 1fr auto;
+    }
+
+    .toc__n {
+      display: none;
+    }
+  }
+</style>

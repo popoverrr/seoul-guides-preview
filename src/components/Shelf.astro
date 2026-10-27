@@ -1,0 +1,362 @@
+---
+// The signature of «Флагман + тетрадь»: six guides as objects on travertine plinths with museum labels
+// (composition = districts, volume = places, format). «Куда вы едете?» lights the guides that cover a
+// district — pure CSS (:has + radio inputs), so it works without JS and from the keyboard.
+// Data: web/src/data/guides.json (districts and volumes from reference/content-audit only).
+import guides from '../data/guides.json';
+import Photo from './Photo.astro';
+import Note from './Note.astro';
+
+const districts = [
+  { code: 'all', name: 'Весь Сеул' },
+  { code: 'seochon', name: 'Сочхон и Букчхон' },
+  { code: 'seongsu', name: 'Сонсу' },
+  { code: 'hongdae', name: 'Хондэ и Ённам' },
+  { code: 'hannam', name: 'Ханнам и Итхэвон' },
+  { code: 'gangnam', name: 'Каннам' },
+  { code: 'euljiro', name: 'Ыльджиро' },
+];
+// plinth heights (px, mobile; desktop scales) — the tallest is the largest guide
+const heights = [150, 120, 96, 132, 104, 116];
+// one rule per district: the guides that cover it are lit, the rest step back
+const rules = districts
+  .filter((d) => d.code !== 'all')
+  .map(
+    (d) =>
+      `.shelf:has(#d-${d.code}:checked) .obj:not([data-d~="${d.code}"]){opacity:.32;filter:grayscale(.6)}` +
+      `.shelf:has(#d-${d.code}:checked) .obj[data-d~="${d.code}"] .label{border-color:var(--patch)}` +
+      `.shelf:has(#d-${d.code}:checked) .obj[data-d~="${d.code}"] .label__tag{background:var(--patch)}`,
+  )
+  .join('');
+---
+
+<div class="shelf">
+  <fieldset class="pick">
+    <legend class="pick__q">Куда вы едете?</legend>
+    <div class="pick__chips">
+      {
+        districts.map((d, i) => (
+          <label class="chip">
+            <input type="radio" name="district" id={`d-${d.code}`} value={d.code} checked={i === 0} />
+            <span>{d.name}</span>
+          </label>
+        ))
+      }
+    </div>
+    <Note mark="arrow-down" rotate={-4} class="pick__note">светятся гайды, где этот район есть</Note>
+  </fieldset>
+
+  <ol class="row" role="list">
+    {
+      guides.map((g, i) => (
+        <li class="obj" data-d={g.districts.join(' ')} style={`--patch:var(${g.patch});--h:${heights[i]}px;--i:${i}`} data-rise>
+          <a class="obj__link" href={`/guides/${g.slug}/`} data-cursor="Открыть">
+            <span class="stage">
+            <span class="print">
+              <span class="print__img" transition:name={`guide-photo-${g.slug}`}>
+                <Photo slot={`guide-${g.slug}`} ratio="4 / 5" alt="" sizes="(min-width: 1024px) 15vw, 66vw" />
+              </span>
+            </span>
+            <span class="plinth" aria-hidden="true">
+              <span class="plinth__top" />
+              <span class="plinth__front">
+                <span class="plinth__emblem t-emblem" lang="ko" transition:name={`guide-emblem-${g.slug}`}>
+                  {g.emblem}
+                </span>
+              </span>
+            </span>
+            </span>
+            <span class="label">
+              <span class="label__head">
+                <span class="label__tag" aria-hidden="true" />
+                <span class="label__name t-name">{g.title_ru}</span>
+              </span>
+              <span class="label__row">
+                <span class="label__k">Состав</span>
+                <span class="label__v">{g.label_ru}</span>
+              </span>
+              <span class="label__row">
+                <span class="label__k">Объём</span>
+                <span class="label__v">{g.volume_ru}</span>
+              </span>
+              <span class="label__row">
+                <span class="label__k">Формат</span>
+                <span class="label__v">страница в личном кабинете, доступ навсегда</span>
+              </span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="floor" aria-hidden="true" />
+</div>
+
+<Fragment set:html={`<style>${rules}</style>`} />
+
+<style>
+  .shelf {
+    position: relative;
+  }
+
+  /* — «Куда вы едете?» — */
+  .pick {
+    min-width: 0; /* a fieldset is min-content wide by default: the chip row would widen the page */
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .pick__q {
+    padding: 0;
+    font-family: var(--f-display);
+    font-size: var(--s-lead);
+    line-height: 1.2;
+  }
+
+  .pick__chips {
+    display: flex;
+    gap: 8px;
+    margin: 16px calc(var(--gutter) * -1) 0;
+    padding: 2px var(--gutter) 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .chip {
+    flex: none;
+    position: relative;
+  }
+
+  .chip input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-pill);
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    transition:
+      background-color var(--d-quick) var(--ease-tea),
+      color var(--d-quick) var(--ease-tea);
+  }
+
+  .chip input:checked + span {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
+
+  :global(.pick__note) {
+    margin: 14px 0 0 6px;
+  }
+
+  /* — the shelf — */
+  .row {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 70%;
+    gap: 20px;
+    align-items: stretch;
+    margin: 0 calc(var(--gutter) * -1);
+    padding: 8px var(--gutter) 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .obj {
+    scroll-snap-align: start;
+    transition:
+      opacity var(--d-base) var(--ease-tea),
+      filter var(--d-base) var(--ease-tea);
+  }
+
+  .obj__link {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    transition: transform 240ms var(--ease-tea);
+  }
+
+  .obj__link:active {
+    transform: scale(0.985);
+    transition-duration: 120ms;
+  }
+
+  /* every plinth stands on one floor: a stage of fixed height, content aligned to its bottom */
+  .stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: var(--stage, 360px);
+    border-bottom: 6px solid var(--shadow-floor);
+    border-radius: 0 0 var(--r-s) var(--r-s);
+  }
+
+  /* a framed print with a passe-partout, standing on the plinth */
+  .print {
+    display: block;
+    margin: 0 10%;
+    padding: 8px;
+    background: var(--paper);
+    border-radius: var(--r-m);
+    transform-origin: bottom center;
+    transition: transform var(--d-base) var(--ease-tea);
+  }
+
+  .print :global(.photo) {
+    border-radius: var(--r-s);
+  }
+
+  @media (hover: hover) {
+    .obj__link:hover .print {
+      transform: translateY(-6px);
+    }
+  }
+
+  .plinth {
+    position: relative;
+    display: block;
+    height: var(--h);
+  }
+
+  .plinth__top {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 14px;
+    background: var(--travertine-top);
+    border-radius: var(--r-s) var(--r-s) 0 0;
+  }
+
+  .plinth__front {
+    position: absolute;
+    inset: 14px 0 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 10px 12px;
+    background: var(--travertine);
+    border-radius: 0 0 var(--r-s) var(--r-s);
+  }
+
+  .plinth__emblem {
+    font-size: clamp(2.5rem, 9vw, 3.5rem);
+    color: rgb(26 25 22 / 0.38);
+  }
+
+  /* the museum label — the one place thin lines live (the client's «тонкие линии») */
+  .label {
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 14px 14px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-m);
+    font-size: var(--s-small);
+    line-height: 1.4;
+    transition: border-color var(--d-base) var(--ease-tea);
+  }
+
+  .label__head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .label__tag {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line-strong);
+    transition: background-color var(--d-base) var(--ease-tea);
+  }
+
+  .label__row {
+    display: grid;
+    grid-template-columns: 4.75em 1fr;
+    gap: 8px;
+  }
+
+  .label__k {
+    color: var(--ink-2);
+  }
+
+  .floor {
+    position: absolute;
+    inset: auto calc(var(--gutter) * -1) 0;
+    height: 0;
+  }
+
+  /* plinths rise into place once (motion/notes.ts) */
+  :global(.js-motion) .obj:not([data-risen]) .plinth,
+  :global(.js-motion) .obj:not([data-risen]) .print {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+
+  .obj[data-risen] .plinth,
+  .obj[data-risen] .print {
+    transition:
+      transform 900ms var(--ease-tea) calc(var(--i) * 70ms),
+      opacity 700ms var(--ease-tea) calc(var(--i) * 70ms);
+  }
+
+  @media (min-width: 1024px) {
+    .pick__chips {
+      flex-wrap: wrap;
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+
+    .row {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 24px;
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+
+    .plinth {
+      height: calc(var(--h) * 1.2);
+    }
+
+    .stage {
+      --stage: 360px;
+    }
+
+    .print {
+      margin: 0 6%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .obj,
+    .print {
+      transition: none;
+    }
+  }
+</style>

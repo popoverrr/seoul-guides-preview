@@ -1,0 +1,95 @@
+---
+// <details> accordion: hairline on top, 1px plus-cross, height animation via ::details-content +
+// interpolate-size where supported (docs/02 § 7). Works without JS.
+import { nb } from '../lib/typo';
+
+interface Props {
+  items: { q: string; a: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((it) => (
+      <details class="faq__item" name="faq">
+        <summary class="faq__q">
+          <span>{nb(it.q)}</span>
+          <i aria-hidden="true" />
+        </summary>
+        <p class="faq__a t-body">{nb(it.a)}</p>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .faq__item {
+    border-top: 1px solid var(--line);
+  }
+
+  .faq__item::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size var(--d-base) var(--ease-tea),
+      content-visibility var(--d-base) allow-discrete;
+  }
+
+  .faq__item[open]::details-content {
+    block-size: auto;
+  }
+
+  .faq__q {
+    display: grid;
+    grid-template-columns: 1fr 20px;
+    align-items: center;
+    gap: 16px;
+    min-height: 64px;
+    padding-block: 16px;
+    list-style: none;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__q i {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    justify-self: end;
+  }
+
+  .faq__q i::before,
+  .faq__q i::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: currentcolor;
+    transition: transform var(--d-base) var(--ease-tea);
+  }
+
+  .faq__q i::after {
+    transform: rotate(90deg);
+  }
+
+  .faq__item[open] .faq__q i::after {
+    transform: rotate(0deg);
+  }
+
+  .faq__a {
+    padding-bottom: 22px;
+    color: var(--ink-2);
+  }
+</style>

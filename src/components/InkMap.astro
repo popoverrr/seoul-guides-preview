@@ -1,0 +1,346 @@
+---
+// Districts on the real map of Seoul (owner 27.10): river, streams, motorways and parks from OpenStreetMap
+// (tools/map/build.py → src/data/seoul-map.json), districts at their real coordinates, rounded name pins.
+// Tap a pin → bottom sheet with the district's character and the guides that cover it (C11).
+// Free part has no places (docs/01 § 5).
+import guides from '../data/guides.json';
+import map from '../data/seoul-map.json';
+import { localeFrom, t } from '../lib/i18n';
+import { nb } from '../lib/typo';
+
+interface District {
+  code: string;
+  name: string;
+  ko: string;
+  lat: number;
+  lon: number;
+  text: string;
+  guides: string[];
+  /** label side and vertical nudge (px) so neighbouring pins never overlap */
+  side?: string;
+  dy?: number;
+}
+interface Props {
+  districts: District[];
+}
+
+const { districts } = Astro.props;
+const locale = localeFrom(Astro.url);
+const base = locale === 'en' ? '/en' : '';
+const [W, H] = map.viewBox as [number, number];
+const [S, Wl, N, E] = map.bbox as [number, number, number, number];
+const kx = Math.cos(((S + N) / 2) * (Math.PI / 180));
+const xy = (lat: number, lon: number) => [((lon - Wl) * kx) / ((E - Wl) * kx) * W, ((N - lat) / (N - S)) * H] as const;
+const bySlug = Object.fromEntries(guides.map((g) => [g.slug, g]));
+---
+
+<div class="inkmap" data-inkmap>
+  <div class="inkmap__canvas" style={`aspect-ratio:${W} / ${H}`}>
+    <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" class="inkmap__svg" preserveAspectRatio="xMidYMid slice">
+      <path class="m-parks" d={map.parks} />
+      <path class="m-roads" d={map.roads} />
+      <path class="m-streams" d={map.streams} />
+      <path class="m-river" d={map.river} style={`stroke-width:${(map.kmUnits * 0.95).toFixed(1)}`} />
+      <text x="92" y="236" class="m-label" lang="ko">한강</text>
+    </svg>
+    <ul class="inkmap__dots" role="list">
+      {
+        districts.map((d, i) => {
+          const [x, y] = xy(d.lat, d.lon);
+          return (
+            <li style={`left:${(x / W) * 100}%;top:${(y / H) * 100}%;--i:${i};--dy:${d.dy ?? 0}px`}>
+              <button
+                type="button"
+                class:list={['pin', { 'pin--left': (d.side ?? (x > W * 0.68 ? 'l' : 'r')) === 'l' }]}
+                data-district={d.code}
+                aria-haspopup="dialog"
+              >
+                <span class="pin__dot" aria-hidden="true" />
+                <span class="pin__label">{d.name}</span>
+              </button>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <p class="inkmap__credit">{map.credit}</p>
+  </div>
+
+  <dialog class="sheet" data-sheet aria-labelledby="sheet-title">
+    <div class="sheet__grip" aria-hidden="true" data-sheet-grip />
+    <div class="sheet__body" data-sheet-body />
+    <button class="sheet__close t-nav" type="button" data-sheet-close>{t(locale, 'close')}</button>
+  </dialog>
+
+  {
+    districts.map((d) => (
+      <template data-district-tpl={d.code}>
+        <p class="sheet__ko t-caption" lang="ko">
+          {d.ko}
+        </p>
+        <h3 class="sheet__title t-h3" id="sheet-title">
+          {d.name}
+        </h3>
+        <p class="sheet__text t-body">{nb(d.text)}</p>
+        <ul class="sheet__guides" role="list">
+          {d.guides
+            .map((s) => bySlug[s])
+            .filter(Boolean)
+            .map((g) => (
+              <li>
+                <a href={`${base}/guides/${g!.slug}/`}>
+                  <span class="t-emblem" lang="ko" aria-hidden="true">
+                    {g!.emblem}
+                  </span>
+                  <span>{locale === 'en' ? g!.title_en : g!.title_ru}</span>
+                </a>
+              </li>
+            ))}
+        </ul>
+      </template>
+    ))
+  }
+</div>
+
+<style>
+  .inkmap__canvas {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--r-l);
+    background: #ece6da;
+  }
+
+  .inkmap__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .inkmap__svg path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .m-parks {
+    fill: #d7dcc8 !important;
+    stroke: none;
+  }
+
+  .m-roads {
+    stroke: #fffaf0;
+    stroke-width: 2.2;
+  }
+
+  .m-streams {
+    stroke: #a9c6c3;
+    stroke-width: 1.4;
+  }
+
+  .m-river {
+    stroke: #b9d1cd;
+  }
+
+  .m-label {
+    font-family: var(--f-ko);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    fill: #5f7f7b;
+  }
+
+  .inkmap__credit {
+    position: absolute;
+    right: 10px;
+    bottom: 6px;
+    font-size: 10px;
+    color: var(--ink-2);
+  }
+
+  .inkmap__dots li {
+    position: absolute;
+    transform: translate(-7px, -50%);
+  }
+
+  /* a rounded name pin: dot + label chip on paper */
+  .pin {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    color: var(--ink);
+    font-size: 0.75rem;
+    line-height: 1.15;
+    text-align: left;
+  }
+
+  .pin--left {
+    flex-direction: row-reverse;
+    transform: translateX(calc(-100% + 14px));
+    text-align: right;
+  }
+
+  .pin__dot {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border: 3px solid var(--paper);
+    border-radius: 50%;
+    background: var(--green);
+    transition: transform var(--d-quick) var(--ease-tea);
+  }
+
+  .pin__label {
+    max-width: 8.5em;
+    transform: translateY(var(--dy, 0));
+    padding: 5px 9px;
+    border-radius: var(--r-pill);
+    background: rgb(246 242 234 / 0.94);
+    transition:
+      background-color var(--d-quick) var(--ease-tea),
+      color var(--d-quick) var(--ease-tea);
+  }
+
+  .pin[aria-expanded='true'] .pin__label,
+  .pin:hover .pin__label {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .pin[aria-expanded='true'] .pin__dot {
+    transform: scale(1.25);
+  }
+
+  /* C11: pins drop in one by one (motion/inkmap.ts sets data-shown) */
+  :global(.js-motion) .inkmap:not([data-shown]) .inkmap__dots li {
+    opacity: 0;
+  }
+
+  .inkmap[data-shown] .inkmap__dots li {
+    animation: pin-in 600ms var(--ease-tea) both;
+    animation-delay: calc(var(--i) * 60ms);
+  }
+
+  @keyframes pin-in {
+    from {
+      opacity: 0;
+      transform: translate(-7px, calc(-50% - 10px));
+    }
+  }
+
+  /* bottom sheet */
+  .sheet {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 640px;
+    max-height: 80dvh;
+    margin: 0 auto;
+    padding: 8px var(--gutter) calc(24px + env(safe-area-inset-bottom));
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+    background: var(--paper);
+    color: var(--ink);
+    overscroll-behavior: contain;
+    transform: translateY(100%);
+    transition:
+      transform var(--d-base) var(--ease-tea),
+      overlay var(--d-base) allow-discrete,
+      display var(--d-base) allow-discrete;
+  }
+
+  .sheet[open] {
+    transform: translateY(var(--drag, 0));
+  }
+
+  .sheet[data-dragging] {
+    transition: none;
+  }
+
+  @starting-style {
+    .sheet[open] {
+      transform: translateY(100%);
+    }
+  }
+
+  .sheet::backdrop {
+    background: rgb(23 22 20 / 0);
+    transition:
+      background-color var(--d-base) var(--ease-tea),
+      overlay var(--d-base) allow-discrete,
+      display var(--d-base) allow-discrete;
+  }
+
+  .sheet[open]::backdrop {
+    background: rgb(23 22 20 / 0.28);
+  }
+
+  @starting-style {
+    .sheet[open]::backdrop {
+      background: rgb(23 22 20 / 0);
+    }
+  }
+
+  .sheet__grip {
+    width: 100%;
+    height: 28px;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .sheet__grip::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 1px;
+    margin: 12px auto 0;
+    background: var(--ink-2);
+  }
+
+  .sheet__body :global(.sheet__title) {
+    margin-top: 6px;
+  }
+
+  .sheet__body :global(.sheet__text) {
+    margin-top: 14px;
+    color: var(--ink-2);
+  }
+
+  .sheet__body :global(.sheet__guides) {
+    margin-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .sheet__body :global(.sheet__guides a) {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    align-items: center;
+    min-height: 56px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sheet__body :global(.sheet__guides .t-emblem) {
+    font-size: 1.5rem;
+  }
+
+  .sheet__close {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet,
+    .sheet[open] {
+      transform: none;
+      transition: opacity 150ms linear;
+    }
+
+    .inkmap[data-shown] .inkmap__dots li {
+      animation: none;
+    }
+  }
+</style>

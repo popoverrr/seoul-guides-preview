@@ -1,0 +1,902 @@
+---
+// Home — «Флагман + тетрадь» (.impeccable/surfaces/web-src-pages-index-astro.md, D-034).
+// A Seoul flagship store of six guides on plinths, annotated by the authors' own hand.
+import Base from '../layouts/Base.astro';
+import TopBar from '../components/TopBar.astro';
+import Photo from '../components/Photo.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Note from '../components/Note.astro';
+import Shelf from '../components/Shelf.astro';
+import LinkArrow from '../components/LinkArrow.astro';
+import ButtonPrimary from '../components/ButtonPrimary.astro';
+import InkMap from '../components/InkMap.astro';
+import PlacePreview from '../components/PlacePreview.astro';
+import Seal from '../components/Seal.astro';
+import FAQ from '../components/FAQ.astro';
+import Footer from '../components/Footer.astro';
+import guides from '../data/guides.json';
+import c from '../content/fixtures/public.ru.json';
+import { nb } from '../lib/typo';
+import { SLOGAN, waLink } from '../lib/brand';
+
+const chapters = [
+  { id: 'guides', title: 'Гайды' },
+  { id: 'inside', title: 'Как устроен гайд' },
+  { id: 'night', title: 'Сеул после девяти' },
+  { id: 'tour', title: 'Тур Christmas Glow' },
+  { id: 'prepare', title: 'Перед поездкой' },
+  { id: 'authors', title: 'Авторы' },
+  { id: 'buy', title: 'Как купить' },
+];
+const bySlug = Object.fromEntries(guides.map((g) => [g.slug, g]));
+const included = [
+  'отель и завтраки',
+  'трансферы и такси на весь день',
+  'SPA и мастер-класс по макияжу',
+  'омакасэ из премиальной говядины и чайная омакасэ',
+  'шоу Touch Five и вечер в клубе',
+  'шопинг со стилистом и бьюти-специалистом',
+];
+---
+
+<Base cover description={c.cover.lead}>
+  <a class="skip" href="#main">К содержанию</a>
+  <TopBar chapters={chapters} />
+
+  <main id="main">
+    <!-- first viewport: the photo, the slogan, one sentence, the action and the authors' hand -->
+    <section class="cover" data-cover-section data-chapter="" aria-labelledby="cover-title">
+      <div class="cover__media" data-cover-media>
+        <Photo slot="cover" ratio="9 / 16" ratioDesktop="16 / 9" alt={c.cover.caption} tone="dark" fill eager lowPriority />
+      </div>
+      <div class="cover__scrim" aria-hidden="true"></div>
+      <div class="cover__text wrap" data-cover-text>
+        <h1 class="cover__title t-display" id="cover-title">{nb(SLOGAN)}</h1>
+        <p class="cover__lead">{nb(c.cover.lead)}</p>
+        <div class="cover__act">
+          <Note tone="photo" mark="arrow-down" rotate={-6} class="cover__sign" instant>Айдана и София</Note>
+          <ButtonPrimary href="#guides" class="cover__btn">Выбрать гайд</ButtonPrimary>
+          <a class="cover__free" href="/prepare/">Бесплатно: перед поездкой</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- the store: six guides on plinths -->
+    <section class="sec wrap" id="guides" data-chapter="guides" aria-labelledby="h-guides">
+      <SectionHead id="h-guides" title={c.guides.title} lead={c.guides.lead}>
+        <Note slot="note" rotate={-3} class="only-phone">листайте полку →</Note>
+      </SectionHead>
+      <div class="sec__body">
+        <Shelf />
+      </div>
+    </section>
+
+    <!-- one opened guide page -->
+    <section class="sec sec--tone" id="inside" data-chapter="inside" aria-labelledby="h-inside">
+      <div class="wrap inside">
+        <SectionHead id="h-inside" title={c.inside.title} lead={c.inside.lead} />
+        <div class="inside__card">
+          <PlacePreview place={c.inside.place} note={c.inside.naver_note} hand={c.inside.note} />
+        </div>
+      </div>
+    </section>
+
+    <!-- night: dark field, neon tubes in amber and teal (owner 27.10) — light, not fake hangul signage (client brief) -->
+    <section class="night tone-night" id="night" data-chapter="night" data-night-chapter aria-labelledby="h-night">
+      <div class="night__frame" data-frame>
+        <Photo slot="night" ratio="4 / 5" ratioDesktop="16 / 9" alt="Джаз-бар в Сеуле ночью" tone="dark" sizes="100vw" />
+        <div class="night__over wrap">
+          <h2 class="night__title" id="h-night">
+            <span class="night__seoul t-head">Сеул</span>
+            <span class="neon" data-neon data-text="после девяти">после девяти</span>
+          </h2>
+          <svg class="tube" viewBox="0 0 320 40" preserveAspectRatio="none" aria-hidden="true" data-neon>
+            <path class="tube__glow" d="M4 30 C 60 6, 110 38, 160 20 S 260 4, 316 22" pathLength="1" />
+            <path class="tube__core" d="M4 30 C 60 6, 110 38, 160 20 S 260 4, 316 22" pathLength="1" />
+          </svg>
+          <p class="night__clock" data-seoul-clock hidden>
+            В Сеуле сейчас <b class="t-num" data-seoul-time></b><span data-seoul-night hidden> — самое время для этой главы</span>
+          </p>
+        </div>
+      </div>
+      <div class="wrap night__body">
+        <p class="t-lead night__lead" data-reveal="fade">{nb(c.night.lead)}</p>
+        <span class="rail" aria-hidden="true"><i></i></span>
+        <ul class="night__list" role="list" data-neon>
+          {
+            c.night.items.map((it, i) => (
+              <li style={`--i:${i}`}>
+                <a href={`/guides/${it.guide}/`}>
+                  <span class="t-emblem night__emblem" lang="ko" aria-hidden="true">
+                    {bySlug[it.guide]?.emblem}
+                  </span>
+                  <span>
+                    <span class="t-name">{it.title}</span>
+                    <span class="night__text">{nb(it.text)}</span>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- the tour as a limited edition on its own plinth -->
+    <section class="sec wrap tour" id="tour" data-chapter="tour" aria-labelledby="h-tour">
+      <div class="tour__print" data-frame>
+        <Photo slot="tour-cover" ratio="4 / 5" alt="Ёлка в лобби отеля, Сеул" sizes="(min-width: 1024px) 50vw, 100vw" />
+      </div>
+      <div class="tour__label">
+        <p class="tour__kicker">{c.tour.kicker}</p>
+        <h2 class="t-head tour__title" id="h-tour">{c.tour.title}</h2>
+        <p class="tour__sub">{c.tour.subtitle}</p>
+        <dl class="tour__rows">
+          <div><dt>Когда</dt><dd>{c.tour.season}, даты — скоро</dd></div>
+          <div><dt>Состав</dt><dd>{included.join(', ')}</dd></div>
+          <div><dt>Стоимость</dt><dd class="t-num">{nb(c.tour.price)}</dd></div>
+        </dl>
+        <LinkArrow href="/tours/christmas-glow/">Программа и заявка</LinkArrow>
+      </div>
+    </section>
+
+    <!-- free: before the trip -->
+    <section class="sec sec--tone" id="prepare" data-chapter="prepare" aria-labelledby="h-prepare">
+      <div class="wrap">
+        <SectionHead id="h-prepare" title={c.prepare.title} lead={c.prepare.lead}>
+          <Note slot="note" mark="underline" rotate={-3}>бесплатно, без регистрации</Note>
+        </SectionHead>
+        <div class="prepare">
+          <ul class="topics" role="list">
+            {
+              c.prepare.topics.map((tp) => (
+                <li>
+                  <a href={`/prepare/#${tp.id}`}>{nb(tp.title)}</a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="prepare__map">
+            <h3 class="t-name">{c.prepare.map_title}</h3>
+            <p class="t-small prepare__maplead">{nb(c.prepare.map_lead)}</p>
+            <InkMap districts={c.prepare.districts} />
+          </div>
+        </div>
+        <LinkArrow href="/prepare/" class="prepare__more">Читать перед поездкой</LinkArrow>
+      </div>
+    </section>
+
+    <!-- authors -->
+    <section class="sec wrap" id="authors" data-chapter="authors" aria-labelledby="h-authors">
+      <div class="authors">
+        <div class="authors__head">
+          <h2 class="t-head" id="h-authors">{c.authors.title}</h2>
+          <p class="t-lead">{c.authors.lead}</p>
+          <div class="authors__sign">
+            <Seal size={76} />
+          </div>
+        </div>
+        <div class="visit">
+          {
+            c.authors.people.map((p) => (
+              <div class="visit__person">
+                <p class="t-name">{p.name}</p>
+                <p class="t-small">{p.role}</p>
+              </div>
+            ))
+          }
+          <Note rotate={-3} class="visit__hand">Айдана и София</Note>
+        </div>
+      </div>
+    </section>
+
+    <!-- how to buy -->
+    <section class="sec sec--tone" id="buy" data-chapter="buy" aria-labelledby="h-buy">
+      <div class="wrap buy">
+        <SectionHead id="h-buy" title={c.buy.title} />
+        <ol class="steps">
+          {
+            c.buy.steps.map((s) => (
+              <li>
+                <span class="t-name">{s.title}</span>
+                <span class="steps__text">{nb(s.text)}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <ButtonPrimary
+          class="buy__cta"
+          href={waLink('Здравствуйте! Хочу купить гайд (RU)')}
+          note="Оплата из России, Казахстана и других стран"
+          data-lead="guide"
+          data-lead-slug="all"
+        >
+          Купить в WhatsApp
+        </ButtonPrimary>
+        <div class="buy__faq">
+          <h3 class="t-name">Вопросы</h3>
+          <FAQ items={c.buy.faq} />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer note={c.footer.note} legal={c.footer.legal} />
+</Base>
+
+<script>
+  // «В Сеуле сейчас …»: the page knows Seoul time (raise from the rain-night challenger); no JS → no line
+  function seoulClock() {
+    const box = document.querySelector<HTMLElement>('[data-seoul-clock]');
+    const time = document.querySelector<HTMLElement>('[data-seoul-time]');
+    const night = document.querySelector<HTMLElement>('[data-seoul-night]');
+    if (!box || !time || !night) return;
+    const now = new Date();
+    time.textContent = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit' }).format(now);
+    const h = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Seoul', hour: '2-digit', hourCycle: 'h23' }).format(now));
+    night.hidden = !(h >= 21 || h < 4);
+    box.hidden = false;
+  }
+  document.addEventListener('astro:page-load', seoulClock);
+</script>
+
+<style>
+  .skip {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 60;
+    padding: 12px 16px;
+    background: var(--ink);
+    color: var(--paper);
+    transform: translateY(-200%);
+  }
+
+  .skip:focus {
+    transform: none;
+  }
+
+  /* ——— cover ——— */
+  .cover {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100svh;
+    overflow: clip;
+    color: var(--on-photo);
+    background: #2a2824;
+  }
+
+  .cover__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cover__scrim {
+    position: absolute;
+    inset: auto 0 0;
+    height: 70%;
+    background: linear-gradient(transparent, rgb(10 10 8 / 0.55));
+    pointer-events: none;
+  }
+
+  .cover__text {
+    position: relative;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .cover__title {
+    max-width: 8ch;
+  }
+
+  .cover__lead {
+    max-width: 30ch;
+    margin-top: 24px;
+    font-size: var(--s-body);
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  .cover__act {
+    display: grid;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  :global(.cover__sign) {
+    margin-left: 4px;
+  }
+
+  .cover__free {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: rgb(255 255 255 / 0.92);
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 1px;
+  }
+
+  /* C1: the frame develops, then the title, then the rest — CSS only, no wait for JS */
+  :global(.js-motion) .cover__media {
+    animation: develop 900ms var(--ease-tea) both;
+  }
+
+  /* the title (the LCP) stands still from its first paint; the frame and the rest move around it */
+
+  :global(.js-motion) .cover__lead,
+  :global(.js-motion) .cover__act {
+    animation: rise 700ms var(--ease-tea) 700ms both;
+  }
+
+  @keyframes develop {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+
+  /* ——— sections ——— */
+  .sec {
+    padding-block: var(--section) 0;
+  }
+
+  .sec--tone {
+    margin-top: calc(var(--section) * 0.75);
+    padding-block: calc(var(--section) * 0.85);
+    background: var(--plaster-2);
+  }
+
+  .sec--tone + .sec {
+    padding-top: var(--section);
+  }
+
+  .sec__body {
+    margin-top: 24px;
+  }
+
+  .inside__card {
+    margin-top: 28px;
+  }
+
+  /* ——— night: neon ——— */
+  .night {
+    --amber: #ffb547;
+    --teal: #4ff0d8;
+    margin-top: calc(var(--section) * 0.75);
+    background: #0b0b0a;
+    color: #f4efe6;
+  }
+
+  .sec--tone + .night {
+    margin-top: 0;
+  }
+
+  .night__frame {
+    position: relative;
+  }
+
+  .night__frame :global(.photo) {
+    border-radius: 0;
+  }
+
+  .night__over {
+    position: absolute;
+    inset: auto 0 0;
+    padding-block: 120px 22px;
+    background: linear-gradient(transparent, rgb(11 11 10 / 0.92) 70%);
+  }
+
+  .night__title {
+    display: grid;
+    gap: 0;
+    font-weight: 400;
+  }
+
+  .night__seoul {
+    color: #fff;
+  }
+
+  /* a neon tube word: white-hot core, amber glow on a separate layer whose opacity hums */
+  .neon {
+    position: relative;
+    justify-self: start;
+    margin-top: -0.12em;
+    font-family: var(--f-hand);
+    font-size: clamp(3.25rem, 2.4rem + 4vw, 6.5rem);
+    font-weight: 500;
+    line-height: 0.95;
+    color: #fff4dc;
+    text-shadow:
+      0 0 2px #fff,
+      0 0 6px var(--amber);
+    transform: rotate(-4deg);
+  }
+
+  .neon::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    text-shadow:
+      0 0 14px var(--amber),
+      0 0 32px var(--amber),
+      0 0 64px rgb(255 140 0 / 0.7);
+    pointer-events: none;
+  }
+
+  .tube {
+    display: block;
+    width: min(100%, 420px);
+    height: 40px;
+    margin-top: 6px;
+    overflow: visible;
+  }
+
+  .tube path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .tube__core {
+    stroke: #e8fffb;
+    stroke-width: 2.5;
+  }
+
+  .tube__glow {
+    stroke: var(--teal);
+    stroke-width: 9;
+    opacity: 0.5;
+    filter: blur(5px);
+  }
+
+  .night__clock {
+    margin-top: 10px;
+    font-size: var(--s-small);
+    color: #c9c1b4;
+  }
+
+  .night__clock b {
+    font-weight: 500;
+    color: var(--teal);
+  }
+
+  .night__body {
+    padding-block: 26px calc(var(--section) * 0.85);
+  }
+
+  .night__lead {
+    color: #f4efe6;
+  }
+
+  /* a teal rail with one light running along it */
+  .rail {
+    position: relative;
+    display: block;
+    height: 2px;
+    margin-top: 26px;
+    border-radius: 2px;
+    background: rgb(79 240 216 / 0.35);
+    box-shadow: 0 0 10px rgb(79 240 216 / 0.45); /* stylelint-disable-line declaration-property-value-disallowed-list -- neon tube glow, owner 27.10 */
+    overflow: hidden;
+  }
+
+  .rail i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 22%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, #e8fffb, transparent);
+    animation: run 3.6s linear infinite;
+  }
+
+  @keyframes run {
+    from {
+      transform: translateX(-100%);
+    }
+
+    to {
+      transform: translateX(460%);
+    }
+  }
+
+  .night__list {
+    display: grid;
+    gap: 10px;
+    margin-top: 26px;
+  }
+
+  .night__list a {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    align-items: center;
+    gap: 14px;
+    min-height: 76px;
+    padding: 16px 18px;
+    background: rgb(255 255 255 / 0.05);
+    border: 1px solid rgb(79 240 216 / 0.28);
+    border-radius: var(--r-m);
+    transition:
+      border-color var(--d-base) var(--ease-tea),
+      background-color var(--d-base) var(--ease-tea);
+  }
+
+  .night__list a:hover,
+  .night__list a:focus-visible {
+    border-color: var(--teal);
+    background: rgb(79 240 216 / 0.08);
+  }
+
+  .night__emblem {
+    font-size: 2.25rem;
+    color: var(--amber);
+    text-shadow: 0 0 12px rgb(255 181 71 / 0.6);
+  }
+
+  .night__list .t-name {
+    color: #fff;
+  }
+
+  .night__text {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--s-small);
+    color: #c9c1b4;
+  }
+
+  /* motion: the tube draws and the word flickers on once (motion/notes.ts sets data-lit), then hums */
+  :global(.js-motion) .tube:not([data-lit]) path {
+    stroke-dashoffset: 1;
+  }
+
+  .tube[data-lit] path {
+    transition: stroke-dashoffset 1400ms var(--ease-tea);
+  }
+
+  :global(.js-motion) .neon:not([data-lit]) {
+    opacity: 0.12;
+  }
+
+  :global(.js-motion) .neon:not([data-lit])::after {
+    opacity: 0;
+  }
+
+  .neon[data-lit] {
+    animation: flicker 1.3s steps(1, end) both;
+  }
+
+  .neon[data-lit]::after {
+    animation:
+      flicker 1.3s steps(1, end) both,
+      hum 3.2s ease-in-out 1.3s infinite alternate;
+  }
+
+  @keyframes flicker {
+    0% {
+      opacity: 0.12;
+    }
+
+    12% {
+      opacity: 1;
+    }
+
+    18% {
+      opacity: 0.25;
+    }
+
+    30% {
+      opacity: 1;
+    }
+
+    36% {
+      opacity: 0.4;
+    }
+
+    48%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes hum {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0.72;
+    }
+  }
+
+  :global(.js-motion) .night__list:not([data-lit]) li {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .night__list[data-lit] li {
+    transition:
+      opacity 600ms var(--ease-tea) calc(400ms + var(--i) * 140ms),
+      transform 600ms var(--ease-tea) calc(400ms + var(--i) * 140ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rail i,
+    .neon[data-lit],
+    .neon[data-lit]::after {
+      animation: none;
+    }
+  }
+
+  /* ——— tour: limited edition ——— */
+  .tour {
+    display: grid;
+    gap: 0;
+  }
+
+  .tour__print {
+    padding: 10px;
+    background: var(--paper);
+    border-radius: var(--r-l);
+  }
+
+  .tour__label {
+    position: relative;
+    margin: -48px 14px 0;
+    padding: 22px 18px 20px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-l);
+  }
+
+  .tour__kicker {
+    font-size: var(--s-small);
+    color: var(--p-tour);
+  }
+
+  .tour__title {
+    margin-top: 10px;
+  }
+
+  .tour__sub {
+    margin-top: 8px;
+    font-family: var(--f-display);
+    font-size: var(--s-lead);
+  }
+
+  .tour__rows {
+    display: grid;
+    gap: 10px;
+    margin: 20px 0 14px;
+    font-size: var(--s-small);
+  }
+
+  .tour__rows div {
+    display: grid;
+    grid-template-columns: 6.5em 1fr;
+    gap: 10px;
+  }
+
+  .tour__rows dt {
+    color: var(--ink-2);
+  }
+
+  .tour__rows dd {
+    line-height: 1.45;
+  }
+
+  /* ——— prepare ——— */
+  .prepare {
+    display: grid;
+    gap: 32px;
+    margin-top: 24px;
+  }
+
+  .topics {
+    display: grid;
+    gap: 6px;
+  }
+
+  .topics a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding: 12px 18px;
+    background: var(--paper);
+    border-radius: var(--r-m);
+    font-size: var(--s-body);
+    transition: transform 240ms var(--ease-tea);
+  }
+
+  .topics a:active {
+    transform: scale(0.985);
+  }
+
+  .prepare__maplead {
+    margin: 8px 0 18px;
+  }
+
+  :global(.prepare__more) {
+    margin-top: 28px;
+  }
+
+  /* ——— authors ——— */
+  .authors {
+    display: grid;
+    gap: 28px;
+  }
+
+  .authors__head .t-lead {
+    margin-top: 18px;
+  }
+
+  .authors__sign {
+    margin-top: 26px;
+  }
+
+  .visit {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 28px 22px 64px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-l);
+  }
+
+  .visit__person .t-small {
+    margin-top: 6px;
+  }
+
+  .visit :global(.visit__hand) {
+    position: absolute;
+    right: 22px;
+    bottom: 18px;
+  }
+
+  /* ——— buy ——— */
+  .steps {
+    display: grid;
+    gap: 8px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps li {
+    display: grid;
+    gap: 6px;
+    padding: 18px 20px 20px;
+    background: var(--paper);
+    border-radius: var(--r-m);
+  }
+
+  .steps__text {
+    font-size: var(--s-body);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  :global(.buy__cta) {
+    margin-block: 32px 0;
+  }
+
+  .buy__faq {
+    margin-top: 44px;
+  }
+
+  .buy__faq .t-name {
+    margin-bottom: 14px;
+  }
+
+  /* ——— desktop: the store at full width ——— */
+  @media (min-width: 1024px) {
+    .cover__text {
+      padding-bottom: 72px;
+    }
+
+    .cover__title {
+      max-width: 11ch;
+    }
+
+    .cover__act {
+      grid-template-columns: auto auto 1fr;
+      align-items: center;
+      gap: 28px;
+    }
+
+    :global(.cover__sign) {
+      grid-column: 1 / -1;
+    }
+
+    .inside {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .inside :global(.sh) {
+      grid-template-columns: 1fr;
+      position: sticky;
+      top: calc(var(--bar-h) + 40px);
+    }
+
+    .inside__card {
+      margin-top: 0;
+    }
+
+    .night__over {
+      padding-bottom: 56px;
+    }
+
+    .night__body {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 0 64px;
+      align-items: start;
+    }
+
+    .night__body .rail {
+      grid-column: 1;
+    }
+
+    .night__list {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      margin-top: 0;
+    }
+
+    .tour {
+      grid-template-columns: 7fr 5fr;
+      align-items: end;
+    }
+
+    .tour__label {
+      margin: 0 0 64px -96px;
+      padding: 32px 32px 28px;
+    }
+
+    .prepare {
+      grid-template-columns: 5fr 7fr;
+      gap: 64px;
+    }
+
+    .authors {
+      grid-template-columns: 5fr 7fr;
+      gap: 64px;
+      align-items: end;
+    }
+
+    .buy {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 0 64px;
+    }
+
+    .buy > :global(*) {
+      grid-column: 2;
+    }
+
+    .buy > :global(.sh) {
+      grid-column: 1;
+      grid-row: 1 / span 4;
+      align-self: start;
+    }
+
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 0;
+    }
+  }
+</style>

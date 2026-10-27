@@ -1,0 +1,48 @@
+{
+  "_note": "Public contents of each guide = section titles only (no places). From reference/content-audit 02–04; replaced by the admin export after P6. Empty list = waiting for the client's file (Q26).",
+  "seoul-food": {
+    "count_note": "94 места в 11 районах",
+    "sections": [
+      { "title": "Сочхон", "ko": "서촌", "note": "кофе, рестораны, бары", "night": false },
+      { "title": "Букчхон", "ko": "북촌", "note": "кофе и чай, рестораны, бары", "night": false },
+      { "title": "Ыльджиро 3-га", "ko": "을지로3가", "note": "бары и ночная жизнь", "night": true },
+      { "title": "Ённам", "ko": "연남동", "note": "кафе и творческие пространства", "night": false },
+      { "title": "Хапчон", "ko": "합정", "note": "рестораны, бары", "night": false },
+      { "title": "Хондэ", "ko": "홍대", "note": "почи, клубы", "night": true },
+      { "title": "Сонсу", "ko": "성수", "note": "кофе и бранчи, ужин и лаунж", "night": false },
+      { "title": "Ханнам", "ko": "한남", "note": "кофе и бранчи, ужин и бары", "night": false },
+      { "title": "Итхэвон", "ko": "이태원", "note": "клубы и пабы", "night": true },
+      { "title": "Хэбанчхон", "ko": "해방촌", "note": "вечерний маршрут", "night": true },
+      { "title": "Каннам", "ko": "강남", "note": "еда и напитки, клубы", "night": true }
+    ]
+  },
+  "shopping-women": {
+    "count_note": "88 магазинов в 9 районах",
+    "sections": [
+      { "title": "Сочхон", "ko": "서촌", "note": "Чонно", "night": false },
+      { "title": "Букчхон", "ko": "북촌", "note": "Чонно", "night": false },
+      { "title": "Хапчон", "ko": "합정", "note": "район Хондэ", "night": false },
+      { "title": "Ённам", "ko": "연남동", "note": "район Хондэ", "night": false },
+      { "title": "Сонсу", "ko": "성수", "note": "и магазины не в пешей доступности", "night": false },
+      { "title": "Ханнам: левая сторона", "ko": "한남", "note": "", "night": false },
+      { "title": "Ханнам: правая сторона", "ko": "한남", "note": "", "night": false },
+      { "title": "Гаросугиль и Синса", "ko": "신사", "note": "Каннам", "night": false },
+      { "title": "Тосан и Апкучжон Родео", "ko": "압구정", "note": "Каннам", "night": false }
+    ]
+  },
+  "beauty": {
+    "count_note": "7 разделов",
+    "sections": [
+      { "title": "Процедуры", "ko": "", "note": "клиники и цены", "night": false },
+      { "title": "Beauty shops", "ko": "", "note": "Olive Young", "night": false },
+      { "title": "Off beauty", "ko": "", "note": "", "night": false },
+      { "title": "Макияж: опыт и мастер-классы", "ko": "", "note": "", "night": false },
+      { "title": "Aeogae Ecojardin", "ko": "", "note": "", "night": false },
+      { "title": "Wellness и spa", "ko": "", "note": "", "night": false },
+      { "title": "Must buy", "ko": "", "note": "", "night": false }
+    ]
+  },
+  "shopping-men": { "count_note": "", "sections": [] },
+  "culture": { "count_note": "", "sections": [] },
+  "kids": { "count_note": "", "sections": [] }
+}

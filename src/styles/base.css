@@ -1,0 +1,186 @@
+/* Reset + page — docs/02. Order of layers: reset, base, type, components, utilities. */
+@layer reset, base, type, components, utilities;
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    interpolate-size: allow-keywords;
+  }
+
+  img,
+  picture,
+  video,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  button {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  ul[role='list'],
+  ol[role='list'] {
+    list-style: none;
+    padding: 0;
+  }
+}
+
+@layer base {
+  html {
+    background: var(--plaster);
+    color: var(--ink);
+    font-family: var(--f-text);
+    font-size: 100%;
+    line-height: 1.55;
+    color-scheme: light; /* the OS dark theme does not repaint the site (docs/02 § 3) */
+    scroll-padding-top: var(--bar-h);
+    scrollbar-color: var(--travertine) var(--plaster);
+    accent-color: var(--green);
+    caret-color: var(--green);
+  }
+
+  body {
+    min-height: 100svh;
+    font-size: var(--s-body);
+    background: var(--plaster);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizelegibility;
+    overflow-x: clip;
+  }
+
+  /* plaster texture: one static grain layer under the content, never over photos (docs/07 § 3) */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button,
+  summary,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
+
+  .tone-night :focus-visible {
+    outline-color: var(--glow);
+  }
+
+  ::selection {
+    background: var(--tape);
+    color: var(--ink);
+  }
+
+
+  :is(p, dd, .t-body) > a:where(:not([class])) {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: 0.07em;
+  }
+
+  [lang='ko'] {
+    font-family: var(--f-ko);
+    word-break: keep-all;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@layer utilities {
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: max(var(--gutter), env(safe-area-inset-left));
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  /* sections below the first screen are laid out on approach: their fonts and images do not compete with the LCP */
+  main > section:not(:first-child),
+  .foot {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  @media (min-width: 1024px) {
+    .only-phone {
+      display: none !important;
+    }
+  }
+}
+
+@layer components {
+  /* I4: "Открыть" next to the cursor over guide links (desktop only, created by motion/scenes.ts) */
+  .cursor-label {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 70;
+    pointer-events: none;
+    color: var(--ink);
+    opacity: 0;
+    transition: opacity var(--d-quick) var(--ease-tea);
+  }
+
+  .cursor-label[data-on] {
+    opacity: 1;
+  }
+
+  html[data-night] .cursor-label {
+    color: var(--night-ink);
+  }
+}

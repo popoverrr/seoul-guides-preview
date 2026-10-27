@@ -1,0 +1,58 @@
+---
+// Running head + label + title + lead + hairline (docs/02 § 5, § 7). Title/lead go through typo().
+import { typo } from '../lib/typo';
+
+interface Props {
+  num: string;
+  label: string;
+  aside?: string;
+  title: string;
+  lead?: string;
+  level?: 'h1' | 'h2';
+  size?: 'chapter' | 'hero';
+}
+
+const { num, label, aside, title, lead, level = 'h2', size = 'chapter' } = Astro.props;
+const H = level;
+---
+
+<header class="head">
+  <p class="head__run t-caption">
+    <span class="head__label t-label">{num} — {label}</span>
+    {aside && <span>{aside}</span>}
+  </p>
+  <H class:list={['head__title', size === 'hero' ? 't-hero' : 't-chapter']} data-reveal="lines" set:html={typo(title)} />
+  {lead && <p class="head__lead t-lead" data-reveal="fade" set:html={typo(lead)} />}
+  <hr class="head__rule" data-reveal="rule" />
+</header>
+
+<style>
+  .head__run {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .head__label {
+    color: var(--jade-ink);
+  }
+
+  :global(.tone-night) .head__label {
+    color: var(--glow);
+  }
+
+  .head__lead {
+    margin-top: 20px;
+  }
+
+  .head__rule {
+    margin-top: 36px;
+    transform-origin: left;
+  }
+
+  :global(.tone-night) .head__rule {
+    border-color: rgb(237 230 218 / 0.16);
+  }
+</style>

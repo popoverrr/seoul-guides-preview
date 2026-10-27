@@ -1,0 +1,55 @@
+---
+// Section heading: the name of the section in Prata and one supporting sentence — no eyebrow, no rule,
+// no italic accent word (taste-skill house rules). An optional handwritten note sits in the margin.
+import { nb } from '../lib/typo';
+
+interface Props {
+  title: string;
+  lead?: string | undefined;
+  id?: string;
+  level?: 'h1' | 'h2';
+}
+
+const { title, lead, id, level = 'h2' } = Astro.props;
+const H = level;
+---
+
+<header class="sh">
+  <H class="sh__title t-head" id={id} data-reveal="lines">{nb(title)}</H>
+  {lead && <p class="sh__lead t-lead" data-reveal="fade">{nb(lead)}</p>}
+  <div class="sh__note"><slot name="note" /></div>
+</header>
+
+<style>
+  .sh {
+    position: relative;
+    display: grid;
+    gap: 14px;
+  }
+
+  .sh__note:empty {
+    display: none;
+  }
+
+  .sh__note {
+    margin-top: 4px;
+  }
+
+  @media (min-width: 1024px) {
+    .sh {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: end;
+      column-gap: 64px;
+    }
+
+    .sh__lead {
+      grid-column: 1;
+    }
+
+    .sh__note {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      place-self: end start;
+    }
+  }
+</style>

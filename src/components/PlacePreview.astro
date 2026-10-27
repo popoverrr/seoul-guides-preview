@@ -1,0 +1,263 @@
+---
+// Chapter III: a preview of a closed guide page — one place card as in the reader (docs/02 § 7 PlaceCard).
+// Name and address are group A, verbatim from the source (D-022). No Naver badge on it: the source has no
+// Naver data (Q19); the Naver note under the card stays TODO(client) until the client answers.
+import Photo from './Photo.astro';
+import Note from './Note.astro';
+import guides from '../data/guides.json';
+import { nb } from '../lib/typo';
+
+interface Props {
+  place: {
+    n: string;
+    guide: string;
+    category: string;
+    src_name: string;
+    description: string;
+    src_address: string;
+    src_locator: string;
+  };
+  note?: string;
+  /** the authors' handwritten tip — paraphrase of a tip that is in the source */
+  hand?: string;
+}
+
+const { place, note, hand } = Astro.props;
+const guide = guides.find((g) => g.slug === place.guide);
+---
+
+<figure class="preview" aria-label="Пример страницы гайда">
+  <div class="preview__frame">
+    <div class="preview__bar t-caption" aria-hidden="true">
+      <span>←</span>
+      <span>{guide?.title_ru}</span>
+      <span class="t-num">3 / 8</span>
+      <span class="preview__progress" style={`--patch:var(${guide?.patch ?? '--jade'})`} />
+    </div>
+
+    <article class="card">
+      <div class="card__media">
+        <span class="tape" aria-hidden="true"></span>
+        <Photo slot="inside-place" ratio="4 / 3" alt="" brief="интерьер ресторана" labelTop sizes="(min-width: 1024px) 420px, 90vw" />
+        <span class="card__n" aria-hidden="true">{place.n}</span>
+      </div>
+      <p class="card__cat t-label">{place.category}</p>
+      <h3 class="card__name" lang="ko">{place.src_name}</h3>
+      <p class="card__desc t-body">{nb(place.description)}</p>
+      {
+        hand && (
+          <div class="card__hand">
+            <Note mark="arrow-left" rotate={-5}>
+              {hand}
+            </Note>
+          </div>
+        )
+      }
+      <dl class="card__data">
+        <div>
+          <dt class="t-caption">Адрес</dt>
+          <dd>{place.src_address}</dd>
+        </div>
+      </dl>
+      <div class="card__actions" aria-hidden="true">
+        <span class="card__naver">Открыть в Naver Map</span>
+        <span class="card__copy t-caption">Скопировать адрес</span>
+      </div>
+      <div class="card__more" aria-hidden="true">
+        <p>Заметка автора: что заказать, когда приходить, как бронировать.</p>
+        <p>Следующее место раздела — в двух минутах пешком.</p>
+      </div>
+    </article>
+  </div>
+  <figcaption class="preview__cap t-caption">
+    <span>Источник: {place.src_locator}</span>
+    {
+      note && (
+        <span class="preview__naver">
+          <i aria-hidden="true">N</i>
+          {nb(note)}
+        </span>
+      )
+    }
+  </figcaption>
+</figure>
+
+<style>
+  .preview__frame {
+    position: relative;
+    margin-inline: auto;
+    max-width: 420px;
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-l);
+    background: var(--paper);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .preview__bar {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    padding-block: 14px;
+    color: var(--ink-2);
+  }
+
+  .preview__progress {
+    position: absolute;
+    inset: auto -16px 0;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .preview__progress::after {
+    content: '';
+    display: block;
+    width: 37.5%;
+    height: 100%;
+    background: var(--patch);
+  }
+
+  .card__media :global(.photo) {
+    border-radius: 0;
+  }
+
+  .card__media {
+    position: relative;
+    margin-inline: -16px;
+  }
+
+  .card__media :global(.plate--top) {
+    padding-top: 36px;
+  }
+
+  .tape {
+    position: absolute;
+    top: 10px;
+    left: 16%;
+    z-index: 2;
+    width: 92px;
+    height: 24px;
+    background: var(--tape);
+    border-radius: 3px;
+    opacity: 0.86;
+    transform: rotate(-6deg);
+  }
+
+  .card__hand {
+    margin: 18px 0 6px;
+    text-align: right;
+  }
+
+  .card__n {
+    position: absolute;
+    left: 14px;
+    bottom: 6px;
+    font-family: var(--f-display);
+    font-size: 3rem;
+    font-weight: 200;
+    font-stretch: 80%;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .card__cat {
+    margin-top: 18px;
+    color: var(--jade-ink);
+  }
+
+  .card__name {
+    margin-top: 10px;
+    font-family: var(--f-ko);
+    font-size: 1.75rem;
+    font-weight: 300;
+    line-height: 1.1;
+  }
+
+  .card__desc {
+    margin-top: 10px;
+    color: var(--ink-2);
+  }
+
+  .card__data {
+    margin-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  .card__data div {
+    display: grid;
+    grid-template-columns: 4.5em 1fr;
+    gap: 12px;
+    padding-block: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .card__data dd {
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card__actions {
+    display: grid;
+    gap: 6px;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .card__naver {
+    display: block;
+    padding-block: 14px;
+    border: 1px solid var(--ink);
+    border-radius: var(--r-pill);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .card__copy {
+    padding-block: 8px;
+  }
+
+  /* the rest of the page fades under a soft mask: a closed page, not a broken one */
+  .card__more {
+    margin-top: 16px;
+    padding-bottom: 28px;
+    color: var(--ink-2);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
+  }
+
+  .card__more p + p {
+    margin-top: 8px;
+  }
+
+  .preview__cap {
+    display: grid;
+    gap: 10px;
+    max-width: 420px;
+    margin: 12px auto 0;
+    text-align: right;
+  }
+
+  .preview__naver {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    text-align: left;
+    color: var(--ink-2);
+  }
+
+  .preview__naver i {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: var(--naver);
+    color: #fff;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+  }
+</style>

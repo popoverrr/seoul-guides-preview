@@ -1,0 +1,113 @@
+---
+// The authors' handwritten note (their PDF voice): Caveat in bottle green + one drawn mark.
+// Only real tips from the authors' files or plain signposts go here — never invented claims.
+// The stroke draws once when the note enters the viewport (motion/notes.ts); static without JS.
+interface Props {
+  /** arrow-down | arrow-left | arrow-right | underline | none */
+  mark?: 'arrow-down' | 'arrow-left' | 'arrow-right' | 'underline' | 'none';
+  rotate?: number;
+  class?: string;
+  tone?: 'day' | 'night' | 'photo';
+  /** in the first viewport: shown at once, no draw-on (keeps LCP and avoids a flash) */
+  instant?: boolean;
+}
+
+const { mark = 'none', rotate = -3, class: cls = '', tone = 'day', instant = false } = Astro.props;
+const paths: Record<string, { d: string; w: number; h: number }> = {
+  'arrow-down': { d: 'M8 4 C 22 18, 30 40, 26 70 M14 58 L26 72 L36 57', w: 44, h: 78 },
+  'arrow-left': { d: 'M76 10 C 58 24, 34 30, 6 26 M18 14 L4 26 L19 37', w: 82, h: 44 },
+  'arrow-right': { d: 'M6 10 C 24 24, 48 30, 76 26 M64 14 L78 26 L63 37', w: 82, h: 44 },
+  underline: { d: 'M4 10 C 40 4, 90 14, 150 6', w: 154, h: 16 },
+};
+const p = mark !== 'none' ? paths[mark] : null;
+---
+
+<span class:list={['note', `note--${tone}`, `note--${mark}`, { 'note--instant': instant }, cls]} style={`--rot:${rotate}deg`} data-note={instant ? undefined : ''} data-drawn={instant ? '' : undefined}>
+  <span class="note__text t-hand"><slot /></span>
+  {
+    p && (
+      <svg class="note__mark" width={p.w} height={p.h} viewBox={`0 0 ${p.w} ${p.h}`} aria-hidden="true">
+        <path d={p.d} pathLength="1" />
+      </svg>
+    )
+  }
+</span>
+
+<style>
+  .note {
+    position: relative;
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 6px;
+    transform: rotate(var(--rot));
+    transform-origin: left center;
+  }
+
+  .note--arrow-down {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .note--arrow-left {
+    flex-direction: row-reverse;
+  }
+
+  .note--underline {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .note__mark {
+    flex: none;
+    overflow: visible;
+  }
+
+  .note__mark path {
+    fill: none;
+    stroke: var(--hand);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  /* first-viewport notes: the 3 KB signature subset first, full Caveat only for missing letters */
+  .note--instant .note__text {
+    font-family: 'Caveat Sign', var(--f-hand);
+  }
+
+  .note--night .note__text,
+  .note--photo .note__text {
+    color: var(--glow);
+  }
+
+  .note--night .note__mark path,
+  .note--photo .note__mark path {
+    stroke: var(--glow);
+  }
+
+  .note--photo .note__text {
+    color: #f3e3bf;
+  }
+
+  /* stroke draws once (motion/notes.ts sets data-drawn); hidden only when JS motion is on */
+  :global(.js-motion) .note:not([data-drawn]) .note__mark path {
+    stroke-dashoffset: 1;
+  }
+
+  :global(.js-motion) .note:not([data-drawn]) .note__text {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  .note[data-drawn] .note__mark path {
+    transition: stroke-dashoffset 900ms var(--ease-tea) 250ms;
+  }
+
+  .note[data-drawn] .note__text {
+    transition:
+      opacity 500ms var(--ease-tea),
+      transform 500ms var(--ease-tea);
+  }
+</style>

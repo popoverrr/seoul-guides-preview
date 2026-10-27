@@ -1,0 +1,202 @@
+---
+// A designed close: the name returns at full width, the authors' seal, plain links.
+import { BRAND_TITLE } from '../lib/brand';
+import { localeFrom, t } from '../lib/i18n';
+import Seal from './Seal.astro';
+
+interface Props {
+  note: string;
+  legal: { href: string; title: string }[];
+}
+
+const { note, legal } = Astro.props;
+const locale = localeFrom(Astro.url);
+---
+
+<footer class="foot" id="contacts">
+  <div class="wrap">
+    <div class="foot__row">
+      <p class="foot__note t-body">{note}</p>
+      <Seal size={72} />
+    </div>
+    <p class="foot__note t-small">{t(locale, 'contacts_todo')}</p>
+    <nav class="foot__legal t-small" aria-label="Документы">
+      {legal.map((l) => <a href={l.href}>{l.title}</a>)}
+      <span>© 2026</span>
+    </nav>
+    <a class="credit" href="https://cybermove.asia" target="_blank" rel="noopener">
+      <span class="credit__body">
+        <span class="credit__dot" aria-hidden="true"></span>
+        <span class="credit__text"><span class="credit__by">Created by</span> <span class="credit__name">Cyber Move Consulting</span></span>
+        <svg class="credit__arrow" width="18" height="12" viewBox="0 0 18 12" aria-hidden="true"><path d="M1 6h15M11 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </span>
+    </a>
+    <p class="foot__mark" aria-hidden="true">{BRAND_TITLE}</p>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    padding-block: 48px 0;
+    background: var(--plaster-2);
+    overflow: clip;
+  }
+
+  .foot__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .foot__note + .foot__note,
+  .foot__row + .foot__note {
+    margin-top: 12px;
+  }
+
+  .foot__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    margin-top: 24px;
+  }
+
+  .foot__legal a,
+  .foot__legal span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .foot__legal a {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* studio credit in the night-chapter language: an ink capsule, a teal neon tube with one light running
+     around it, the name in Prata, an amber arrow — stands out on the plaster footer */
+  @property --credit-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  .credit {
+    position: relative;
+    display: inline-flex;
+    margin-top: 32px;
+    padding: 2px;
+    border-radius: var(--r-pill);
+    background: conic-gradient(
+      from var(--credit-angle),
+      rgb(79 240 216 / 0.25) 0deg 250deg,
+      #4ff0d8 300deg,
+      #e8fffb 330deg,
+      rgb(79 240 216 / 0.25) 360deg
+    );
+    box-shadow: 0 0 22px rgb(79 240 216 / 0.28); /* stylelint-disable-line declaration-property-value-disallowed-list -- neon tube glow, as in the night chapter */
+    animation: credit-run 3.6s linear infinite;
+    transition:
+      transform 300ms var(--ease-tea),
+      box-shadow 300ms var(--ease-tea);
+  }
+
+  .credit__body {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 54px;
+    padding: 0 22px 0 18px;
+    border-radius: inherit;
+    background: #121210;
+    color: #f4efe6;
+    white-space: nowrap;
+  }
+
+  .credit__dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ff0d8;
+    box-shadow: 0 0 10px #4ff0d8; /* stylelint-disable-line declaration-property-value-disallowed-list -- lamp glow */
+    animation: credit-hum 2.4s ease-in-out infinite alternate;
+  }
+
+  .credit__by {
+    font-size: 0.8125rem;
+    color: #a39c90;
+  }
+
+  .credit__name {
+    font-family: var(--f-display);
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+  }
+
+  .credit__arrow {
+    color: #ffb547;
+    transition: transform 300ms var(--ease-tea);
+  }
+
+  .credit:hover,
+  .credit:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 0 34px rgb(79 240 216 / 0.45); /* stylelint-disable-line declaration-property-value-disallowed-list -- neon brightens */
+  }
+
+  .credit:hover .credit__arrow,
+  .credit:focus-visible .credit__arrow {
+    transform: translateX(4px);
+  }
+
+  .credit:active {
+    transform: scale(0.98);
+  }
+
+  @keyframes credit-run {
+    to {
+      --credit-angle: 360deg;
+    }
+  }
+
+  @keyframes credit-hum {
+    to {
+      opacity: 0.45;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .credit,
+    .credit__dot {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 374px) {
+    .credit__body {
+      gap: 8px;
+      padding-inline: 14px 16px;
+    }
+
+    .credit__name {
+      font-size: 1rem;
+    }
+  }
+
+  .foot__mark {
+    margin: 32px 0 -0.18em;
+    font-family: var(--f-display);
+    font-size: 16.5vw;
+    line-height: 0.8;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  @media (min-width: 1024px) {
+    .foot__mark {
+      font-size: min(17.5vw, 15rem);
+    }
+  }
+</style>

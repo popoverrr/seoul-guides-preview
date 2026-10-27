@@ -1,0 +1,427 @@
+---
+// Tour landing «special issue» (docs/01 § 4a, docs/02 § 6 Лендинг тура). Data: content-audit/05 § 3.
+// No timers, no «2 seats left», no clip-art (docs/02). Programme, dates, booking terms — TODO(client) (Q21).
+import Base from '../../layouts/Base.astro';
+import TopBar from '../../components/TopBar.astro';
+import Photo from '../../components/Photo.astro';
+import Note from '../../components/Note.astro';
+import ButtonPrimary from '../../components/ButtonPrimary.astro';
+import FAQ from '../../components/FAQ.astro';
+import Footer from '../../components/Footer.astro';
+import c from '../../content/fixtures/public.ru.json';
+import { nb } from '../../lib/typo';
+import { waLink } from '../../lib/brand';
+
+const directions = [
+  { en: 'Wellness', ru: 'SPA и отдых', slot: 'cover' },
+  { en: 'Beauty', ru: 'мастер-класс по макияжу, бьюти-шопинг', slot: 'guide-beauty' },
+  { en: 'Shopping', ru: 'шопинг со стилистом', slot: 'guide-shopping-women' },
+  { en: 'Food experiences', ru: 'омакасэ из премиальной говядины, чайная омакасэ', slot: 'guide-seoul-food' },
+  { en: 'Culture', ru: 'шоу Touch Five', slot: 'guide-culture' },
+  { en: 'Nightlife', ru: 'VIP-столик в клубе', slot: 'night' },
+];
+const included = [
+  'Отель: одноместное или двухместное размещение',
+  'Завтраки в отеле',
+  'Такси на весь день',
+  'Трансфер Инчхон — Сеул и обратно',
+  'Мастер-класс по макияжу и welcome gift с косметикой',
+  'Посещение SPA',
+  'Омакасэ с премиальной говядиной',
+  'Чайная омакасэ (Teathology)',
+  'VIP-столик в клубе',
+  'Шоу Touch Five',
+  'Стилист: шопинг-сопровождение и рекомендации',
+  'Бьюти-специалист: бьюти-шопинг с рекомендациями',
+];
+const faq = [
+  { q: 'Какие даты?', a: '[даты тура — скоро]' },
+  { q: 'Перелёт входит в стоимость?', a: '[что не входит в стоимость — скоро]' },
+  { q: 'Как забронировать место?', a: 'Оставьте заявку в WhatsApp — расскажем об условиях брони и предоплаты.' },
+  { q: 'Можно добавить чекап?', a: 'Да, по желанию: +300 000 ₸.' },
+];
+const rooms = [
+  { label: 'Отдельная комната', price: '1 500 000 ₸', option: 'single' },
+  { label: 'Двухместное размещение', price: '1 300 000 ₸', option: 'double' },
+];
+---
+
+<Base cover title="Christmas Glow" description="Glow Up presents: Christmas Glow — авторский тур в Сеул на Рождество 2026.">
+  <TopBar />
+  <main id="main" class="tour">
+    <section class="tcover" data-cover-section aria-labelledby="t-title">
+      <div class="tcover__img">
+        <Photo slot="tour-cover" ratio="9 / 16" ratioDesktop="16 / 9" alt="Рождественский Сеул" tone="dark" fill eager lowPriority labelTop brief="рождественский Сеул: ёлки у универмагов, лобби отелей — только с правами" />
+      </div>
+      <div class="tcover__scrim" aria-hidden="true"></div>
+      <div class="tcover__text wrap">
+        <p class="tcover__kicker t-label">{c.tour.kicker}</p>
+        <h1 class="t-hero tcover__title" id="t-title">Christmas<br />Glow</h1>
+        <p class="tcover__sub">{c.tour.subtitle}</p>
+        <p class="tcover__season t-caption">{c.tour.season}</p>
+      </div>
+    </section>
+
+    <section class="tsec wrap" aria-labelledby="t1">
+      <h2 class="t-chapter" id="t1" data-reveal="lines">Шесть направлений</h2>
+      <ul class="tdirs" role="list">
+        {
+          directions.map((d, n) => (
+            <li class={`tdirs__i d${n + 1}`}>
+              <Photo slot={d.slot} ratio="auto" alt="" fill />
+              <span class="tdirs__label">
+                <span class="tdirs__en">{d.en}</span>
+                <span class="t-caption">{nb(d.ru)}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="tsec wrap" aria-labelledby="t2">
+      <h2 class="t-chapter" id="t2" data-reveal="lines">Программа</h2>
+      <p class="t-lead tsec__lead">Программу по дням авторы публикуют ближе к поездке. Она может меняться в рамках бюджета — например, если в эти даты будут концерты.</p>
+      <Note rotate={-3} class="tsec__note">по дням — скоро</Note>
+    </section>
+
+    <section class="tsec wrap" aria-labelledby="t3">
+      <h2 class="t-chapter" id="t3" data-reveal="lines">Что включено</h2>
+      <ul class="tinc" role="list">
+        {
+          included.map((it) => (
+            <li>
+              <span class="tinc__dot" aria-hidden="true" />
+              <span>{nb(it)}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="tsec wrap" aria-labelledby="t4">
+      <h2 class="t-chapter" id="t4" data-reveal="lines">Стоимость</h2>
+      <dl class="tprice">
+        {
+          rooms.map((r) => (
+            <div class="ptag">
+              <span class="ptag__hole" aria-hidden="true" />
+              <dt>{r.label}</dt>
+              <dd class="tprice__sum t-num">{nb(r.price)}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="tprice__note t-caption">Без комиссии агентства и налогов. Чекап по желанию — +300 000 ₸.</p>
+    </section>
+
+    <section class="tsec wrap" aria-labelledby="t5">
+      <h2 class="t-chapter" id="t5" data-reveal="lines">Как поехать</h2>
+      <div class="tapply">
+        {
+          rooms.map((r, n) =>
+            n === 0 ? (
+              <ButtonPrimary
+                href={waLink(`Здравствуйте! Хочу в тур Christmas Glow — ${r.label.toLowerCase()}`)}
+                data-lead="tour"
+                data-lead-slug="christmas-glow"
+                data-lead-option={r.option}
+              >
+                Заявка: {r.label.toLowerCase()}
+              </ButtonPrimary>
+            ) : (
+              <a
+                class="tapply__alt"
+                href={waLink(`Здравствуйте! Хочу в тур Christmas Glow — ${r.label.toLowerCase()}`)}
+                data-lead="tour"
+                data-lead-slug="christmas-glow"
+                data-lead-option={r.option}
+              >
+                Заявка: {r.label.toLowerCase()}
+              </a>
+            ),
+          )
+        }
+      </div>
+      <FAQ items={faq} />
+    </section>
+  </main>
+  <Footer note={c.footer.note} legal={c.footer.legal} />
+</Base>
+
+<style>
+  .tcover {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100svh;
+    color: var(--on-photo);
+    background: #2a2824;
+    overflow: clip;
+  }
+
+  .tcover__img {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* C1: the frame develops out of the dark, the title stands still from its first paint */
+  :global(.js-motion) .tcover__img {
+    animation: develop 900ms var(--ease-tea) both;
+  }
+
+  @keyframes develop {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .tcover__scrim {
+    position: absolute;
+    inset: auto 0 0;
+    height: 62%;
+    background: linear-gradient(transparent, rgb(0 0 0 / 0.45));
+  }
+
+  .tcover__text {
+    position: relative;
+    padding-bottom: calc(44px + env(safe-area-inset-bottom));
+  }
+
+  .tcover__kicker {
+    color: #e7b3a9; /* --p-tour lightened for white-on-photo contrast */
+  }
+
+  .tcover__title {
+    margin-top: 18px;
+    font-size: var(--s-display);
+  }
+
+  .tcover__sub {
+    margin-top: 16px;
+    font-family: var(--f-display);
+    font-size: 1.375rem;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .tcover__season {
+    margin-top: 22px;
+    color: rgb(255 255 255 / 0.8);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .tsec {
+    padding-top: var(--chapter-gap);
+  }
+
+  .tsec:last-child {
+    padding-bottom: 72px;
+  }
+
+  .tsec__run {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .tsec__run .t-label {
+    color: var(--p-tour);
+  }
+
+  .tsec__lead {
+    margin-top: 22px;
+  }
+
+  /* six directions as a small bojagi of frames */
+  .tdirs {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 64px;
+    gap: 1px;
+    margin-top: 24px;
+    background: var(--line-strong);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-l);
+    overflow: hidden;
+  }
+
+  .tdirs__i :global(.photo) {
+    border-radius: 0;
+  }
+
+  .tdirs__i {
+    position: relative;
+    overflow: hidden;
+    background: var(--cream-2);
+  }
+
+  .d1 { grid-column: 1 / 5; grid-row: span 3; }
+  .d2 { grid-column: 5 / 7; grid-row: span 3; }
+  .d3 { grid-column: 1 / 3; grid-row: span 3; }
+  .d4 { grid-column: 3 / 7; grid-row: span 3; }
+  .d5 { grid-column: 1 / 4; grid-row: span 2; }
+  .d6 { grid-column: 4 / 7; grid-row: span 2; }
+
+  .tdirs__i :global(.plate) {
+    display: none;
+  }
+
+  .tdirs__i::after {
+    content: '';
+    position: absolute;
+    inset: 35% 0 0;
+    background: linear-gradient(transparent, rgb(10 10 8 / 0.6));
+  }
+
+  .tdirs__label {
+    position: absolute;
+    z-index: 1;
+    inset: auto 10px 10px;
+    color: var(--on-photo);
+    display: grid;
+    gap: 2px;
+  }
+
+  .tdirs__label .t-caption {
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .tdirs__en {
+    font-family: var(--f-display);
+    font-size: 1.25rem;
+    font-weight: 300;
+    font-stretch: 90%;
+    line-height: 1.05;
+  }
+
+  .tinc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .tinc li {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    min-height: 104px;
+    padding: 16px;
+    background: var(--paper);
+    border-radius: var(--r-m);
+    font-size: 0.9375rem;
+    line-height: 1.35;
+  }
+
+  .tinc__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--p-tour);
+  }
+
+  :global(.tsec__note) {
+    margin-top: 14px;
+  }
+
+  .tprice {
+    display: grid;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  /* price tags with a punched hole */
+  .ptag {
+    position: relative;
+    padding: 18px 20px 20px 54px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-l);
+  }
+
+  .ptag__hole {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--plaster);
+  }
+
+  .ptag dt {
+    font-size: var(--s-small);
+    color: var(--ink-2);
+  }
+
+  .tprice__sum {
+    margin-top: 6px;
+    font-family: var(--f-display);
+    font-size: clamp(2.25rem, 1.6rem + 3vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .tprice__note {
+    margin-top: 14px;
+  }
+
+  .tapply {
+    display: grid;
+    gap: 8px;
+    margin-block: 36px 56px;
+  }
+
+  .tapply__alt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    border: 1px solid var(--ink);
+    border-radius: var(--r-pill);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  @media (min-width: 1024px) {
+    .tcover__text {
+      padding-bottom: 72px;
+    }
+
+    .tsec {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      grid-auto-flow: dense;
+      gap: 0 64px;
+    }
+
+    .tsec > :global(*) {
+      grid-column: 2;
+    }
+
+    .tsec > h2 {
+      grid-column: 1;
+      grid-row: 1 / span 8;
+      align-self: start;
+    }
+
+    .tsec > :global(:not(h2):first-of-type),
+    .tsec > h2 + :global(*) {
+      margin-top: 0;
+    }
+
+    .tinc {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .tapply {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
+</style>

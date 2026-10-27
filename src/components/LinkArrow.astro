@@ -1,0 +1,50 @@
+---
+// Action link instead of pill buttons: text + 24px line-arrow, 1px underline offset 6px (docs/02 § 7).
+interface Props {
+  href: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, class: cls = '', ...rest } = Astro.props;
+---
+
+<a class:list={['arrow', cls]} href={href} {...rest}>
+  <span class="arrow__text"><slot /></span>
+  <svg class="arrow__icon" width="24" height="10" viewBox="0 0 24 10" aria-hidden="true">
+    <path d="M0 5h22.5M18 1l4.5 4L18 9" fill="none" stroke="currentColor" stroke-width="1" />
+  </svg>
+</a>
+
+<style>
+  .arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .arrow__text {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 6px;
+    text-decoration-color: currentcolor;
+  }
+
+  .arrow__icon {
+    transition: transform var(--d-quick) var(--ease-tea);
+  }
+
+  @media (hover: hover) {
+    .arrow:hover .arrow__icon {
+      transform: translateX(4px);
+    }
+  }
+
+  .arrow:active .arrow__icon {
+    transform: translateX(4px);
+  }
+</style>
