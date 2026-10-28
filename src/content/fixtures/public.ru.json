@@ -187,8 +187,7 @@
       "src_address": "11 Achasan-ro 1-gil, Seongdong-gu, Seoul",
       "src_locator": "ГАЙД СЕУЛ 2026 autumn.pdf, стр. 30"
     },
-    "naver_note": "Где у места есть данные Naver, показываем их без изменений: корейский адрес, часы и ссылку.",
-    "naver_note_todo": "TODO(client): показывать после ответа по данным Naver (Q19)",
+    "naver_note": "Адреса — из Naver, как в приложении, без изменений.",
     "note": "бронируйте через Catch Table"
   },
   "night": {
@@ -216,7 +215,7 @@
     "kicker": "Glow Up presents",
     "title": "Christmas Glow",
     "subtitle": "Dear Santa, take me to Seoul.",
-    "season": "Seoul · Christmas 2026",
+    "season": "Сеул · 23–28 декабря 2026",
     "directions": [
       "Wellness",
       "Beauty",
@@ -227,7 +226,6 @@
     ],
     "lead": "Авторский тур на Рождество: SPA и мастер-класс по макияжу, омакасэ, шопинг со стилистом, шоу и вечер в клубе. Отель, трансферы и такси на весь день включены.",
     "price": "от 1 300 000 ₸",
-    "price_todo": "TODO(client): какую цену показывать (Q21)",
     "caption": "Рождество в Сеуле",
     "label_title": "Тур сезона"
   },
