@@ -1,0 +1,547 @@
+---
+// Mock-up (noindex) of the proposed guide-choice flow — 4 phone screens 390×844 for discussion with the owner.
+// Not linked from the site. Real fonts, photos and tokens.
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import guides from '../../data/guides.json';
+
+const ready = new Set(['seoul-food', 'shopping-women', 'beauty']);
+const short: Record<string, string> = {
+  'seoul-food': 'Еда',
+  'shopping-women': 'Женский шопинг',
+  'shopping-men': 'Мужской шопинг',
+  culture: 'Культура',
+  kids: 'С детьми',
+  beauty: 'Бьюти',
+};
+const lines: Record<string, string> = {
+  'seoul-food': 'кафе, рестораны и бары — 94 места',
+  'shopping-women': 'концепт-сторы и винтаж — 88 магазинов',
+  'shopping-men': 'мастерские и марки',
+  culture: 'районы, где жить, мастер-классы',
+  kids: 'досуг и кафе для детей',
+  beauty: 'клиники, Olive Young, spa',
+};
+const interests = ['Еда', 'Шопинг', 'Бьюти', 'С детьми', 'Культура', 'Ночь'];
+const picked = new Set(['seoul-food', 'shopping-women']);
+---
+
+<Base title="Выбор гайдов — макет" noindex>
+  <div class="frames">
+    <!-- 1. cover with the six guides as buttons -->
+    <section class="frame" data-frame-id="1">
+      <div class="cover">
+        <Photo slot="cover" ratio="9 / 16" alt="" tone="dark" fill eager />
+        <div class="scrim"></div>
+        <div class="bar on-photo"><span class="brand">Seoul Notes</span><span class="gbtn">Гайды</span><span>Меню</span></div>
+        <div class="cover__in">
+          <h1 class="t-display h1">Сеул в деталях</h1>
+          <p class="lead">Шесть гайдов Айданы и Софии. Выберите свой:</p>
+          <ul class="pebbles" role="list">
+            {guides.map((g) => (
+              <li class:list={{ soon: !ready.has(g.slug) }} style={`--patch:var(${g.patch})`}>
+                <span class="pebble__ko" lang="ko">{g.emblem}</span>
+                <span>{short[g.slug]}</span>
+              </li>
+            ))}
+          </ul>
+          <span class="cta">Подобрать гайд ↓</span>
+        </div>
+      </div>
+      <p class="cap">1 · Шесть гайдов видны на первом экране — тап ведёт в гайд</p>
+    </section>
+
+    <!-- 2. grid 2×3 with interest chips -->
+    <section class="frame paper" data-frame-id="2">
+      <div class="bar"><span class="brand">Seoul Notes</span><span class="gbtn">Гайды</span><span>Меню</span></div>
+      <div class="pad">
+        <h2 class="t-head h2">Шесть гайдов</h2>
+        <p class="sub">Каждый покупается отдельно — берите только нужные.</p>
+        <p class="q">Что вам интересно в Сеуле?</p>
+        <ul class="chips" role="list">
+          {interests.map((x, i) => <li class:list={{ on: i < 2 }}>{x}</li>)}
+        </ul>
+        <ul class="grid" role="list">
+          {guides.map((g) => {
+            const lit = ['seoul-food', 'shopping-women', 'shopping-men'].includes(g.slug);
+            return (
+              <li class:list={['card', { dim: !lit, picked: picked.has(g.slug) }]} style={`--patch:var(${g.patch})`}>
+                <div class="card__img">
+                  <Photo slot={`guide-${g.slug}`} ratio="1 / 1" alt="" sizes="180px" />
+                  {!ready.has(g.slug) && <span class="soon-badge">скоро</span>}
+                  <span class="card__ko" lang="ko">{g.emblem}</span>
+                </div>
+                <p class="card__name">{g.title_ru}</p>
+                <p class="card__line">{lines[g.slug]}</p>
+                <div class="card__foot">
+                  <span class="price">{ready.has(g.slug) ? '— ₽' : 'скоро'}</span>
+                  <span class="add">{picked.has(g.slug) ? '✓' : '+'}</span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <p class="cap">2 · Все шесть сразу, выбор по интересу, «+» — в подборку</p>
+    </section>
+
+    <!-- 3. selection bar -->
+    <section class="frame paper" data-frame-id="3">
+      <div class="bar"><span class="brand">Seoul Notes</span><span class="gbtn">Гайды · 2</span><span>Меню</span></div>
+      <div class="pad">
+        <h2 class="t-head h2">Моя подборка</h2>
+        <ul class="sel" role="list">
+          {guides.filter((g) => picked.has(g.slug)).map((g) => (
+            <li style={`--patch:var(${g.patch})`}>
+              <div class="sel__img"><Photo slot={`guide-${g.slug}`} ratio="1 / 1" alt="" sizes="72px" /></div>
+              <div><p class="card__name">{g.title_ru}</p><p class="card__line">{lines[g.slug]}</p></div>
+              <span class="price">— ₽</span>
+              <span class="x">×</span>
+            </li>
+          ))}
+        </ul>
+        <div class="msg">
+          <p class="msg__k">Сообщение соберётся само:</p>
+          <p class="msg__v">«Здравствуйте! Хочу купить гайды: Seoul Food, Женский шопинг (RU)»</p>
+        </div>
+        <ol class="steps3" role="list">
+          <li><b>Пишете</b> в WhatsApp — сообщение готово</li>
+          <li><b>Оплачиваете</b> из России, Казахстана и других стран</li>
+          <li><b>Получаете</b> логин и пароль — гайды в кабинете навсегда</li>
+        </ol>
+      </div>
+      <div class="dock">
+        <span><b>2 гайда</b> · — ₽</span>
+        <span class="dock__btn">Написать в WhatsApp</span>
+      </div>
+      <p class="cap">3 · Плашка подборки внизу на любой странице — одно сообщение на все гайды</p>
+    </section>
+
+    <!-- 4. guide page with switcher and sticky buy bar -->
+    <section class="frame paper" data-frame-id="4">
+      <div class="bar"><span class="brand">Seoul Notes</span><span class="gbtn">Гайды · 2</span><span>Меню</span></div>
+      <ul class="switch" role="list">
+        {guides.map((g) => (
+          <li class:list={{ cur: g.slug === 'seoul-food' }} style={`--patch:var(${g.patch})`}>
+            <span lang="ko">{g.emblem}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="gtop">
+        <Photo slot="guide-seoul-food" ratio="4 / 3" alt="" sizes="390px" />
+      </div>
+      <div class="pad">
+        <h2 class="t-head h2">Seoul Food</h2>
+        <p class="sub">Кафе, рестораны и Nightlife — 94 места в 11 районах</p>
+        <ul class="facts" role="list">
+          <li>Страница в кабинете</li>
+          <li>Доступ навсегда</li>
+          <li>2 устройства</li>
+        </ul>
+      </div>
+      <div class="dock">
+        <span><b>Seoul Food</b> · — ₽</span>
+        <span class="dock__ghost">+ в подборку</span>
+        <span class="dock__btn small">Купить</span>
+      </div>
+      <p class="cap">4 · В гайде: переключатель шести гайдов сверху и кнопка покупки всегда под пальцем</p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .frames {
+    display: grid;
+    gap: 40px;
+    padding: 20px 0 60px;
+  }
+
+  .frame {
+    position: relative;
+    width: 390px;
+    height: 844px;
+    overflow: hidden;
+    background: var(--plaster);
+  }
+
+  .paper {
+    background: var(--plaster);
+  }
+
+  .cap {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 30;
+    padding: 6px 12px;
+    background: #121210;
+    color: #ffd23f;
+    font-size: 12px;
+  }
+
+  .bar {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 56px;
+    padding: 0 20px;
+    font-size: 15px;
+  }
+
+  .bar .brand {
+    margin-right: auto;
+    font-family: var(--f-display);
+    font-size: 20px;
+  }
+
+  .gbtn {
+    padding: 6px 14px;
+    border-radius: var(--r-pill);
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  .on-photo {
+    color: #fff;
+  }
+
+  .on-photo .gbtn {
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .cover {
+    position: absolute;
+    inset: 0;
+    color: #fff;
+  }
+
+  .scrim {
+    position: absolute;
+    inset: 30% 0 0;
+    background: linear-gradient(transparent, rgb(10 10 8 / 0.75));
+  }
+
+  .cover__in {
+    position: absolute;
+    inset: auto 20px 50px;
+  }
+
+  .h1 {
+    font-size: 64px;
+    max-width: 7ch;
+  }
+
+  .lead {
+    margin-top: 14px;
+    font-size: 16px;
+  }
+
+  .pebbles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .pebbles li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 12px;
+    border-radius: var(--r-pill);
+    background: rgb(246 242 234 / 0.94);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.1;
+  }
+
+  .pebbles .soon {
+    background: rgb(246 242 234 / 0.6);
+  }
+
+  .pebble__ko {
+    font-family: var(--f-ko);
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--patch);
+  }
+
+  .cta {
+    display: block;
+    margin-top: 14px;
+    font-size: 15px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .pad {
+    padding: 4px 20px 0;
+  }
+
+  .h2 {
+    font-size: 40px;
+  }
+
+  .sub {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .q {
+    margin-top: 16px;
+    font-family: var(--f-display);
+    font-size: 19px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .chips li {
+    padding: 7px 13px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-pill);
+    font-size: 13px;
+  }
+
+  .chips .on {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .card {
+    padding: 8px 8px 10px;
+    border-radius: var(--r-m);
+    background: var(--paper);
+    border: 1.5px solid transparent;
+  }
+
+  .card.dim {
+    opacity: 0.4;
+  }
+
+  .card.picked {
+    border-color: var(--patch);
+  }
+
+  .card__img {
+    position: relative;
+  }
+
+  .card__img :global(.photo) {
+    border-radius: var(--r-s);
+    aspect-ratio: 16 / 10;
+  }
+
+  .card__ko {
+    position: absolute;
+    right: 8px;
+    bottom: 2px;
+    font-family: var(--f-ko);
+    font-size: 26px;
+    font-weight: 200;
+    color: #fff;
+  }
+
+  .soon-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+  }
+
+  .card__name {
+    margin-top: 8px;
+    font-family: var(--f-display);
+    font-size: 16px;
+    line-height: 1.1;
+  }
+
+  .card__line {
+    margin-top: 3px;
+    font-size: 11.5px;
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+
+  .card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .price {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .add {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--ink);
+    font-size: 16px;
+  }
+
+  .picked .add {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--paper);
+  }
+
+  .sel {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .sel li {
+    display: grid;
+    grid-template-columns: 64px 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px 8px 8px;
+    border-radius: var(--r-m);
+    background: var(--paper);
+  }
+
+  .sel__img :global(.photo) {
+    border-radius: var(--r-s);
+  }
+
+  .x {
+    font-size: 18px;
+    color: var(--ink-2);
+  }
+
+  .msg {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: var(--r-m);
+    background: #dcf8c6;
+  }
+
+  .msg__k {
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  .msg__v {
+    margin-top: 4px;
+    font-size: 14px;
+  }
+
+  .steps3 {
+    display: grid;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .dock {
+    position: absolute;
+    inset: auto 12px 40px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 8px 8px 18px;
+    border-radius: var(--r-pill);
+    background: #121210;
+    color: #f4efe6;
+    font-size: 14px;
+  }
+
+  .dock > span:first-child {
+    margin-right: auto;
+  }
+
+  .dock__btn {
+    padding: 12px 16px;
+    border-radius: var(--r-pill);
+    background: var(--green);
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  .dock__btn.small {
+    padding: 12px 18px;
+  }
+
+  .dock__ghost {
+    padding: 11px 12px;
+    border: 1px solid rgb(244 239 230 / 0.4);
+    border-radius: var(--r-pill);
+    font-size: 13px;
+  }
+
+  .switch {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px 10px;
+  }
+
+  .switch li {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 40px;
+    border-radius: var(--r-pill);
+    background: var(--paper);
+    font-family: var(--f-ko);
+    font-size: 18px;
+    color: var(--patch);
+  }
+
+  .switch .cur {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .gtop {
+    padding: 0 20px;
+  }
+
+  .gtop :global(.photo) {
+    border-radius: var(--r-l);
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .facts li {
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+    background: var(--paper);
+    font-size: 13px;
+  }
+</style>

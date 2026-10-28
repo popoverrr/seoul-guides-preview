@@ -19,6 +19,9 @@ const home = locale === 'en' ? '/en/' : '/';
     <a href={altPath(Astro.url, 'ru')} aria-current={locale === 'ru' ? 'true' : undefined} hreflang="ru" lang="ru">RU</a>
     <a href={altPath(Astro.url, 'en')} aria-current={locale === 'en' ? 'true' : undefined} hreflang="en" lang="en">EN</a>
   </nav>
+  <a class="bar__guides" href={`${home}#guides`}>
+    Гайды<span class="bar__count" data-pick-has hidden>&nbsp;·&nbsp;<span data-pick-count>0</span></span>
+  </a>
   <button class="bar__menu" type="button" aria-haspopup="dialog" aria-controls="menu" data-menu-open>
     {t(locale, 'menu')}
   </button>
@@ -45,6 +48,10 @@ const home = locale === 'en' ? '/en/' : '/';
         <a href={locale === 'en' ? '/en/login/' : '/login/'}>{t(locale, 'login')}</a>
       </li>
     </ul>
+  </nav>
+  <nav class="menu__lang" aria-label="Язык">
+    <a href={altPath(Astro.url, 'ru')} aria-current={locale === 'ru' ? 'true' : undefined} hreflang="ru" lang="ru">Русский</a>
+    <a href={altPath(Astro.url, 'en')} aria-current={locale === 'en' ? 'true' : undefined} hreflang="en" lang="en">English</a>
   </nav>
   <p class="menu__foot t-small">{t(locale, 'contacts_todo')}</p>
 </dialog>
@@ -121,6 +128,53 @@ const home = locale === 'en' ? '/en/' : '/';
   .bar__menu {
     margin-right: -8px;
     font-weight: 500;
+  }
+
+  /* the one visible entry to the guides from any screen */
+  .bar__guides {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: var(--r-pill);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  :global(html[data-cover]:not([data-past-cover])) .bar__guides {
+    background: #fff;
+    color: var(--ink);
+  }
+
+  :global(html[data-night]) .bar__guides {
+    background: var(--night-ink);
+    color: var(--night);
+  }
+
+  /* phones: the language switch lives in the menu, the bar keeps brand · Гайды · Меню */
+  @media (max-width: 559px) {
+    .bar {
+      gap: 10px;
+    }
+
+    .bar__lang {
+      display: none;
+    }
+  }
+
+  .menu__lang {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    font-size: 1rem;
+  }
+
+  .menu__lang a[aria-current] {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
   }
 
   .bar__progress {

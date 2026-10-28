@@ -18,6 +18,11 @@
     interpolate-size: allow-keywords;
   }
 
+  /* `hidden` always wins over component display rules (selection states toggle it) */
+  [hidden] {
+    display: none !important;
+  }
+
   img,
   picture,
   video,
@@ -147,6 +152,11 @@
 
   .nowrap {
     white-space: nowrap;
+  }
+
+  /* the selection dock never covers the end of the page */
+  html[data-dock] body {
+    padding-bottom: 84px;
   }
 
   /* sections below the first screen are laid out on approach: their fonts and images do not compete with the LCP */

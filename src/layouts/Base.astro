@@ -4,6 +4,7 @@ import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/type.css';
+import PickDock from '../components/PickDock.astro';
 import { BRAND } from '../lib/brand';
 import { altPath, localeFrom } from '../lib/i18n';
 
@@ -13,16 +14,18 @@ interface Props {
   noindex?: boolean;
   /** cover = page starts with a full-bleed photo, the top bar is white over it */
   cover?: boolean;
+  /** the page has its own buy bar (guide page, /pick/): hide the global selection dock */
+  noDock?: boolean;
 }
 
-const { title, description = '', noindex = false, cover = false } = Astro.props;
+const { title, description = '', noindex = false, cover = false, noDock = false } = Astro.props;
 const locale = localeFrom(Astro.url);
 const fullTitle = title ? `${title} — ${BRAND}` : BRAND;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={locale} data-cover={cover ? '' : undefined}>
+<html lang={locale} data-cover={cover ? '' : undefined} data-no-dock={noDock ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -46,6 +49,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <slot />
+    <PickDock />
     <script>
       import { boot } from '../motion/boot';
       boot();

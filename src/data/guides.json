@@ -20,7 +20,14 @@
       "seongsu",
       "hannam",
       "gangnam"
-    ]
+    ],
+    "short_ru": "Еда",
+    "line_ru": "кафе, рестораны и бары — 94 места",
+    "interests": [
+      "food",
+      "night"
+    ],
+    "ready": true
   },
   {
     "slug": "shopping-women",
@@ -42,7 +49,13 @@
       "seongsu",
       "hannam",
       "gangnam"
-    ]
+    ],
+    "short_ru": "Женский шопинг",
+    "line_ru": "концепт-сторы и винтаж — 88 магазинов",
+    "interests": [
+      "shopping"
+    ],
+    "ready": true
   },
   {
     "slug": "shopping-men",
@@ -58,7 +71,13 @@
     "price": "TODO(client)",
     "label_ru": "Состав появится, когда авторы закончат файл",
     "volume_ru": "в работе",
-    "districts": []
+    "districts": [],
+    "short_ru": "Мужской шопинг",
+    "line_ru": "мастерские, марки и материалы",
+    "interests": [
+      "shopping"
+    ],
+    "ready": false
   },
   {
     "slug": "culture",
@@ -76,7 +95,14 @@
     "volume_ru": "в работе",
     "districts": [
       "seochon"
-    ]
+    ],
+    "short_ru": "Культура",
+    "line_ru": "районы, где жить, мастер-классы",
+    "interests": [
+      "culture",
+      "night"
+    ],
+    "ready": false
   },
   {
     "slug": "kids",
@@ -92,7 +118,13 @@
     "price": "TODO(client)",
     "label_ru": "Состав появится, когда авторы закончат файл",
     "volume_ru": "в работе",
-    "districts": []
+    "districts": [],
+    "short_ru": "С детьми",
+    "line_ru": "досуг, кафе и активности для детей",
+    "interests": [
+      "kids"
+    ],
+    "ready": false
   },
   {
     "slug": "beauty",
@@ -108,6 +140,12 @@
     "price": "TODO(client)",
     "label_ru": "Процедуры, Olive Young, офф-бьюти, макияж, wellness и spa, must buy",
     "volume_ru": "7 разделов",
-    "districts": []
+    "districts": [],
+    "short_ru": "Бьюти",
+    "line_ru": "клиники, Olive Young, салоны и spa",
+    "interests": [
+      "beauty"
+    ],
+    "ready": true
   }
 ]

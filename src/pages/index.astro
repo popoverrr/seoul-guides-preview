@@ -6,7 +6,7 @@ import TopBar from '../components/TopBar.astro';
 import Photo from '../components/Photo.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Note from '../components/Note.astro';
-import Shelf from '../components/Shelf.astro';
+import GuideGrid from '../components/GuideGrid.astro';
 import LinkArrow from '../components/LinkArrow.astro';
 import ButtonPrimary from '../components/ButtonPrimary.astro';
 import InkMap from '../components/InkMap.astro';
@@ -17,7 +17,7 @@ import Footer from '../components/Footer.astro';
 import guides from '../data/guides.json';
 import c from '../content/fixtures/public.ru.json';
 import { nb } from '../lib/typo';
-import { SLOGAN, waLink } from '../lib/brand';
+import { SLOGAN } from '../lib/brand';
 
 const chapters = [
   { id: 'guides', title: 'Гайды' },
@@ -53,9 +53,23 @@ const included = [
       <div class="cover__text wrap" data-cover-text>
         <h1 class="cover__title t-display" id="cover-title">{nb(SLOGAN)}</h1>
         <p class="cover__lead">{nb(c.cover.lead)}</p>
+        <!-- the six guides on the first screen: tap goes straight into a guide -->
+        <ul class="pebbles" role="list" aria-label="Гайды">
+          {
+            guides.map((g) => (
+              <li>
+                <a class:list={['pebble', { 'pebble--soon': !g.ready }]} href={`/guides/${g.slug}/`} style={`--patch:var(${g.patch})`}>
+                  <span class="pebble__ko" lang="ko" aria-hidden="true">
+                    {g.emblem}
+                  </span>
+                  <span>{g.short_ru}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
         <div class="cover__act">
-          <Note tone="photo" mark="arrow-down" rotate={-6} class="cover__sign" instant>Айдана и София</Note>
-          <ButtonPrimary href="#guides" class="cover__btn">Выбрать гайд</ButtonPrimary>
+          <a class="cover__go" href="#guides">Подобрать гайд ↓</a>
           <a class="cover__free" href="/prepare/">Бесплатно: перед поездкой</a>
         </div>
       </div>
@@ -64,10 +78,10 @@ const included = [
     <!-- the store: six guides on plinths -->
     <section class="sec wrap" id="guides" data-chapter="guides" aria-labelledby="h-guides">
       <SectionHead id="h-guides" title={c.guides.title} lead={c.guides.lead}>
-        <Note slot="note" rotate={-3} class="only-phone">листайте полку →</Note>
+        <Note slot="note" mark="arrow-down" rotate={-3}>«+» — в подборку, купить можно сразу несколько</Note>
       </SectionHead>
       <div class="sec__body">
-        <Shelf />
+        <GuideGrid />
       </div>
     </section>
 
@@ -204,15 +218,17 @@ const included = [
             ))
           }
         </ol>
-        <ButtonPrimary
-          class="buy__cta"
-          href={waLink('Здравствуйте! Хочу купить гайд (RU)')}
-          note="Оплата из России, Казахстана и других стран"
-          data-lead="guide"
-          data-lead-slug="all"
-        >
-          Купить в WhatsApp
-        </ButtonPrimary>
+        <div class="buy__cta">
+          <div data-pick-empty>
+            <ButtonPrimary href="#guides" note="Отметьте «+» нужные гайды — сообщение соберётся само">Выбрать гайды</ButtonPrimary>
+          </div>
+          <div data-pick-has hidden>
+            <ButtonPrimary href="#contacts" data-pick-wa data-lead="guide" data-lead-slug="pick" note="Оплата из России, Казахстана и других стран">
+              Написать в WhatsApp · <span data-pick-label>0 гайдов</span>
+            </ButtonPrimary>
+            <a class="buy__pick" href="/pick/">Посмотреть подборку</a>
+          </div>
+        </div>
         <div class="buy__faq">
           <h3 class="t-name">Вопросы</h3>
           <FAQ items={c.buy.faq} />
@@ -298,14 +314,62 @@ const included = [
   }
 
   .cover__act {
-    display: grid;
-    gap: 10px;
-    margin-top: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 22px;
+    margin-top: 10px;
   }
 
-  :global(.cover__sign) {
-    margin-left: 4px;
+  /* six guides as round pebbles on the cover (3 × 2 on phones, one row on desktop) */
+  .pebbles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 18px;
   }
+
+  .pebble {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 12px;
+    border-radius: var(--r-pill);
+    background: rgb(246 242 234 / 0.95);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    line-height: 1.1;
+    transition:
+      transform 200ms var(--ease-tea),
+      background-color var(--d-quick) var(--ease-tea);
+  }
+
+  .pebble:active {
+    transform: scale(0.96);
+  }
+
+  .pebble--soon {
+    background: rgb(246 242 234 / 0.68);
+  }
+
+  .pebble__ko {
+    flex: none;
+    font-family: var(--f-ko);
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--patch);
+  }
+
+  .cover__go {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+  }
+
 
   .cover__free {
     justify-self: start;
@@ -787,8 +851,17 @@ const included = [
     color: var(--ink-2);
   }
 
-  :global(.buy__cta) {
+  .buy__cta {
     margin-block: 32px 0;
+  }
+
+  .buy__pick {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 6px;
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
   }
 
   .buy__faq {
@@ -809,14 +882,14 @@ const included = [
       max-width: 11ch;
     }
 
-    .cover__act {
-      grid-template-columns: auto auto 1fr;
-      align-items: center;
-      gap: 28px;
+    .pebbles {
+      grid-template-columns: repeat(6, auto);
+      justify-content: start;
     }
 
-    :global(.cover__sign) {
-      grid-column: 1 / -1;
+    .pebble {
+      padding: 0 18px;
+      font-size: 0.9375rem;
     }
 
     .inside {

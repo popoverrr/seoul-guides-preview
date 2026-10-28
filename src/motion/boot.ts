@@ -5,6 +5,7 @@ import { initMenu } from './menu';
 import { initInkmap } from './inkmap';
 import { initLeads } from './leads';
 import { initNotes } from './notes';
+import { initPick } from './pick';
 
 type Cleanup = () => void;
 let cleanups: Cleanup[] = [];
@@ -39,7 +40,7 @@ async function heavy(): Promise<Cleanup[]> {
 }
 
 function start() {
-  cleanups = [initTopbar(document), initMenu(document), initInkmap(document), initLeads(document), initNotes(document)];
+  cleanups = [initTopbar(document), initMenu(document), initInkmap(document), initLeads(document), initNotes(document), initPick(document)];
   if (reduced()) return;
   let alive = true;
   cleanups.push(() => {

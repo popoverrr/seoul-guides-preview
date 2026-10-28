@@ -32,7 +32,7 @@ const nightCount = toc?.sections.filter((s) => s.night).length ?? 0;
 const hasPreview = g.slug === c.inside.place.guide;
 ---
 
-<Base cover title={g.title_ru} description={`${g.title_ru}: ${g.subtitle_ru}`}>
+<Base cover noDock title={g.title_ru} description={`${g.title_ru}: ${g.subtitle_ru}`}>
   <TopBar />
   <main id="main" style={`--patch:var(${g.patch})`}>
     <section class="gcover" data-cover-section aria-labelledby="g-title">
@@ -40,6 +40,22 @@ const hasPreview = g.slug === c.inside.place.guide;
         <Photo slot={`guide-${g.slug}`} ratio="9 / 16" ratioDesktop="16 / 9" alt="" tone="dark" fill eager />
       </div>
       <div class="gcover__scrim" aria-hidden="true"></div>
+      <!-- switch between the six guides without going back to the home page -->
+      <nav class="gswitch" aria-label="Другие гайды">
+        {
+          guides.map((x) => (
+            <a
+              class:list={['gswitch__i', { 'gswitch__i--cur': x.slug === g.slug }]}
+              href={`/guides/${x.slug}/`}
+              aria-current={x.slug === g.slug ? 'page' : undefined}
+              aria-label={x.title_ru}
+              style={`--patch:var(${x.patch})`}
+            >
+              <span lang="ko" aria-hidden="true">{x.emblem}</span>
+            </a>
+          ))
+        }
+      </nav>
       <div class="gcover__text wrap">
         <span class="gcover__emblem t-emblem" lang="ko" aria-hidden="true" transition:name={`guide-emblem-${g.slug}`}>{g.emblem}</span>
         <h1 class="t-display gcover__title" id="g-title">{g.title_ru}</h1>
@@ -58,8 +74,13 @@ const hasPreview = g.slug === c.inside.place.guide;
         </div>
         <div><dt>Состав</dt><dd>{g.label_ru}</dd></div>
         <div><dt>Объём</dt><dd>{g.volume_ru}</dd></div>
-        <div><dt>Формат</dt><dd>страница в личном кабинете, доступ навсегда, два устройства</dd></div>
       </dl>
+      <ul class="gfacts" role="list">
+        <li>Страница в личном кабинете</li>
+        <li>Доступ навсегда</li>
+        <li>2 устройства</li>
+        <li>Покупается отдельно</li>
+      </ul>
     </div>
 
     <section class="gsec wrap" aria-labelledby="toc-title">
@@ -139,6 +160,17 @@ const hasPreview = g.slug === c.inside.place.guide;
       <LinkArrow href="/#guides">Все гайды</LinkArrow>
     </nav>
   </main>
+
+  <!-- this guide's buy bar, always under the thumb -->
+  <div class="gdock" data-pick-card style={`--patch:var(${g.patch})`}>
+    <span class="gdock__sum"><b>{g.title_ru}</b><span>{g.ready ? 'цена скоро' : 'в работе'}</span></span>
+    <button class="gdock__add" type="button" data-pick-toggle={g.slug} aria-pressed="false" hidden>
+      <span class="gdock__off">+ в подборку</span><span class="gdock__on">✓ в подборке</span>
+    </button>
+    <a class="gdock__buy" href={waLink(`Здравствуйте! Хочу купить гайд «${g.title_ru}» (RU)`)} data-lead="guide" data-lead-slug={g.slug}>
+      Купить
+    </a>
+  </div>
   <Footer note={c.footer.note} legal={c.footer.legal} />
 </Base>
 
@@ -193,6 +225,126 @@ const hasPreview = g.slug === c.inside.place.guide;
   }
 
   /* the museum label over the cover */
+  /* guide switcher over the top of the cover */
+  .gswitch {
+    position: absolute;
+    top: calc(var(--bar-h) + env(safe-area-inset-top) + 4px);
+    inset-inline: 0;
+    z-index: 2;
+    display: flex;
+    gap: 6px;
+    padding: 0 var(--gutter);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .gswitch__i {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 40px;
+    border-radius: var(--r-pill);
+    background: rgb(246 242 234 / 0.9);
+    font-family: var(--f-ko);
+    font-size: 1.125rem;
+    color: var(--patch);
+  }
+
+  .gswitch__i--cur {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .gfacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .gfacts li {
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+    background: var(--paper);
+    font-size: 0.8125rem;
+  }
+
+  /* buy bar */
+  :global(body) {
+    padding-bottom: 84px;
+  }
+
+  .gdock {
+    position: fixed;
+    inset: auto 12px calc(12px + env(safe-area-inset-bottom));
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 640px;
+    margin-inline: auto;
+    padding: 6px 6px 6px 18px;
+    border-radius: var(--r-pill);
+    background: #121210;
+    color: #f4efe6;
+    box-shadow: 0 10px 30px rgb(18 18 16 / 0.28); /* stylelint-disable-line declaration-property-value-disallowed-list -- the bar floats over the page */
+  }
+
+  .gdock__sum {
+    display: grid;
+    min-width: 0;
+    margin-right: auto;
+    line-height: 1.15;
+  }
+
+  .gdock__sum b {
+    overflow: hidden;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gdock__sum span {
+    font-size: 0.75rem;
+    color: #a39c90;
+  }
+
+  .gdock__add {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgb(244 239 230 / 0.4);
+    border-radius: var(--r-pill);
+    color: #f4efe6;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  .gdock__on,
+  .gdock__add[aria-pressed='true'] .gdock__off {
+    display: none;
+  }
+
+  .gdock__add[aria-pressed='true'] .gdock__on {
+    display: inline;
+  }
+
+  .gdock__add[aria-pressed='true'] {
+    border-color: #4ff0d8;
+    color: #4ff0d8;
+  }
+
+  .gdock__buy {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 20px;
+    border-radius: var(--r-pill);
+    background: var(--green);
+    color: var(--green-ink);
+    font-weight: 500;
+  }
+
   .glabel {
     position: relative;
     z-index: 1;

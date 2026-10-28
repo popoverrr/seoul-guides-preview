@@ -1,0 +1,180 @@
+---
+// «Моя подборка» (D-043): the guides picked on the site, the WhatsApp message that will be sent, three steps.
+// Filled on the client from localStorage (motion/pick.ts) — the page itself is static and never indexed.
+import Base from '../layouts/Base.astro';
+import TopBar from '../components/TopBar.astro';
+import Photo from '../components/Photo.astro';
+import ButtonPrimary from '../components/ButtonPrimary.astro';
+import LinkArrow from '../components/LinkArrow.astro';
+import Footer from '../components/Footer.astro';
+import guides from '../data/guides.json';
+import c from '../content/fixtures/public.ru.json';
+---
+
+<Base title="Моя подборка" noindex noDock>
+  <TopBar />
+  <main id="main" class="pk wrap">
+    <h1 class="t-head pk__title">Моя подборка</h1>
+    <p class="pk__lead">Каждый гайд покупается отдельно. Здесь — те, что вы отметили «+».</p>
+
+    <div class="pk__empty" data-pick-empty>
+      <p>Подборка пока пустая.</p>
+      <LinkArrow href="/#guides">Выбрать гайды</LinkArrow>
+    </div>
+
+    <div data-pick-has hidden>
+      <ul class="pk__list" role="list" data-pick-list></ul>
+
+      <div class="pk__msg">
+        <p class="pk__msg-k">Сообщение соберётся само:</p>
+        <p class="pk__msg-v" data-pick-message></p>
+      </div>
+
+      <ol class="pk__steps">
+        <li><b>Пишете</b> в WhatsApp — сообщение уже готово</li>
+        <li><b>Оплачиваете</b> из России, Казахстана и других стран</li>
+        <li><b>Получаете</b> логин и пароль — гайды в личном кабинете навсегда</li>
+      </ol>
+
+      <ButtonPrimary href="#contacts" data-pick-wa data-lead="guide" data-lead-slug="pick" class="pk__cta">
+        Написать в WhatsApp · <span data-pick-label>0 гайдов</span>
+      </ButtonPrimary>
+      <LinkArrow href="/#guides" class="pk__more">Добавить ещё гайд</LinkArrow>
+    </div>
+  </main>
+
+  {
+    guides.map((g) => (
+      <template data-pick-item={g.slug}>
+        <li class="pk__item" style={`--patch:var(${g.patch})`}>
+          <a class="pk__img" href={`/guides/${g.slug}/`}>
+            <Photo slot={`guide-${g.slug}`} ratio="1 / 1" alt="" sizes="72px" />
+          </a>
+          <a class="pk__text" href={`/guides/${g.slug}/`}>
+            <span class="pk__name">{g.title_ru}</span>
+            <span class="pk__line">{g.line_ru}</span>
+          </a>
+          <span class="pk__price">{g.ready ? 'цена скоро' : 'в работе'}</span>
+          <button class="pk__x" type="button" data-pick-remove={g.slug} aria-label={`Убрать «${g.title_ru}»`}>
+            ×
+          </button>
+        </li>
+      </template>
+    ))
+  }
+
+  <Footer note={c.footer.note} legal={c.footer.legal} />
+</Base>
+
+<style>
+  .pk {
+    min-height: 70svh;
+    padding-top: calc(var(--bar-h) + 28px);
+    padding-bottom: 56px;
+  }
+
+  .pk__lead {
+    margin-top: 10px;
+    color: var(--ink-2);
+  }
+
+  .pk__empty {
+    display: grid;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 22px 20px;
+    border-radius: var(--r-l);
+    background: var(--paper);
+  }
+
+  .pk__list {
+    display: grid;
+    gap: 8px;
+    margin-top: 22px;
+  }
+
+  .pk__list :global(.pk__item) {
+    display: grid;
+    grid-template-columns: 64px 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: var(--r-m);
+    background: var(--paper);
+  }
+
+  .pk__list :global(.pk__img .photo) {
+    border-radius: var(--r-s);
+  }
+
+  .pk__list :global(.pk__text) {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .pk__list :global(.pk__name) {
+    font-family: var(--f-display);
+    font-size: 1.125rem;
+    line-height: 1.1;
+  }
+
+  .pk__list :global(.pk__line) {
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+  }
+
+  .pk__list :global(.pk__price) {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .pk__list :global(.pk__x) {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.375rem;
+    color: var(--ink-2);
+  }
+
+  .pk__msg {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: var(--r-m);
+    background: #dcf3d4;
+  }
+
+  .pk__msg-k {
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+  }
+
+  .pk__msg-v {
+    margin-top: 4px;
+  }
+
+  .pk__steps {
+    display: grid;
+    gap: 8px;
+    margin: 20px 0 0;
+    padding-left: 20px;
+    line-height: 1.45;
+  }
+
+  :global(.pk__cta) {
+    margin-top: 22px;
+  }
+
+  :global(.pk__more) {
+    margin-top: 10px;
+  }
+
+  @media (min-width: 1024px) {
+    .pk {
+      max-width: 720px;
+    }
+  }
+</style>

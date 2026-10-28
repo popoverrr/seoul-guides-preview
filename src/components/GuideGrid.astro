@@ -1,0 +1,280 @@
+---
+// All guides at once (owner 28.10: the choice must be simple and obvious): a 2-column grid on phones,
+// 3 on desktop. «Что вам интересно в Сеуле?» dims the guides that do not match — pure CSS (:has + radios).
+// Each card: photo, hangul emblem, one line «что внутри», price, «+» to «Моя подборка» (motion/pick.ts).
+import guides from '../data/guides.json';
+import Photo from './Photo.astro';
+
+const interests = [
+  { code: 'all', name: 'Всё' },
+  { code: 'food', name: 'Еда' },
+  { code: 'shopping', name: 'Шопинг' },
+  { code: 'beauty', name: 'Бьюти' },
+  { code: 'kids', name: 'С детьми' },
+  { code: 'culture', name: 'Культура' },
+  { code: 'night', name: 'Ночь' },
+];
+const rules = interests
+  .filter((x) => x.code !== 'all')
+  .map((x) => `.gg:has(#i-${x.code}:checked) .gcard:not([data-i~="${x.code}"]){opacity:.35}`)
+  .join('');
+---
+
+<div class="gg">
+  <fieldset class="pick">
+    <legend class="pick__q">Что вам интересно в Сеуле?</legend>
+    <div class="pick__chips">
+      {
+        interests.map((x, i) => (
+          <label class="chip">
+            <input type="radio" name="interest" id={`i-${x.code}`} value={x.code} checked={i === 0} />
+            <span>{x.name}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <ul class="grid" role="list">
+    {
+      guides.map((g) => (
+        <li class="gcard" data-i={g.interests.join(' ')} data-pick-card style={`--patch:var(${g.patch})`}>
+          <a class="gcard__link" href={`/guides/${g.slug}/`} data-cursor="Открыть">
+            <span class="gcard__img" transition:name={`guide-photo-${g.slug}`}>
+              <Photo slot={`guide-${g.slug}`} ratio="16 / 10" alt="" sizes="(min-width: 1024px) 30vw, 46vw" />
+              <span class="gcard__ko t-emblem" lang="ko" aria-hidden="true" transition:name={`guide-emblem-${g.slug}`}>
+                {g.emblem}
+              </span>
+              {!g.ready && <span class="gcard__soon">скоро</span>}
+            </span>
+            <span class="gcard__name">{g.title_ru}</span>
+            <span class="gcard__line">{g.line_ru}</span>
+          </a>
+          <div class="gcard__foot">
+            <span class="gcard__price">{g.ready ? 'цена скоро' : 'в работе'}</span>
+            <button
+              class="gcard__add"
+              type="button"
+              data-pick-toggle={g.slug}
+              aria-pressed="false"
+              aria-label={`Добавить «${g.title_ru}» в подборку`}
+              hidden
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                <path class="i-plus" d="M7 1v12M1 7h12" />
+                <path class="i-check" d="M1.5 7.5 5.5 11 12.5 3" />
+              </svg>
+            </button>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<Fragment set:html={`<style>${rules}</style>`} />
+
+<style>
+  .pick {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .pick__q {
+    padding: 0;
+    font-family: var(--f-display);
+    font-size: var(--s-lead);
+    line-height: 1.2;
+  }
+
+  .pick__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .chip {
+    position: relative;
+  }
+
+  .chip input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 15px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-pill);
+    font-size: 0.9375rem;
+    transition:
+      background-color var(--d-quick) var(--ease-tea),
+      color var(--d-quick) var(--ease-tea);
+  }
+
+  .chip input:checked + span {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .gcard {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 8px 8px 10px;
+    border: 1.5px solid transparent;
+    border-radius: var(--r-m);
+    background: var(--paper);
+    transition:
+      opacity var(--d-base) var(--ease-tea),
+      border-color var(--d-base) var(--ease-tea);
+  }
+
+  .gcard[data-picked] {
+    border-color: var(--patch);
+  }
+
+  .gcard__link {
+    display: grid;
+    align-content: start;
+    gap: 4px;
+  }
+
+  .gcard__link:active {
+    transform: scale(0.985);
+  }
+
+  .gcard__img {
+    position: relative;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .gcard__img :global(.photo) {
+    border-radius: var(--r-s);
+  }
+
+  .gcard__ko {
+    position: absolute;
+    right: 8px;
+    bottom: 4px;
+    font-size: 1.75rem;
+    color: #fff;
+  }
+
+  .gcard__soon {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    padding: 2px 9px;
+    border-radius: var(--r-pill);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.75rem;
+  }
+
+  .gcard__name {
+    font-family: var(--f-display);
+    font-size: 1.0625rem;
+    line-height: 1.1;
+  }
+
+  .gcard__line {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+
+  .gcard__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .gcard__price {
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .gcard__add {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    color: var(--ink);
+    transition:
+      background-color var(--d-quick) var(--ease-tea),
+      transform 200ms var(--ease-tea);
+  }
+
+  .gcard__add:active {
+    transform: scale(0.92);
+  }
+
+  .gcard__add svg path {
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .gcard__add .i-check,
+  .gcard__add[aria-pressed='true'] .i-plus {
+    display: none;
+  }
+
+  .gcard__add[aria-pressed='true'] .i-check {
+    display: block;
+  }
+
+  .gcard__add[aria-pressed='true'] {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--green-ink);
+  }
+
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .gcard {
+      padding: 12px 12px 14px;
+    }
+
+    .gcard__name {
+      font-size: 1.375rem;
+    }
+
+    .gcard__line {
+      font-size: 0.9375rem;
+    }
+  }
+</style>
