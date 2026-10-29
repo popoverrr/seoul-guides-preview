@@ -9,7 +9,7 @@
       "file": "photos/client/cover.jpg",
       "source": "чат заказчицы 28.10, IMG_5629.JPG (вертикальное 4:5)",
       "rights": "client",
-      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+      "note": "фото заказчицы; надпись SEOUL убрана GPT Image 2.5 (job 22bb2d33), апскейл Bytedance 4k (3291x4096); D-047"
     }
   },
   "prepare": {
@@ -29,7 +29,7 @@
       "file": "photos/client/cover-wide.jpg",
       "source": "чат заказчицы 28.10, IMG_5625.JPG (горизонтальное 16:9)",
       "rights": "client",
-      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+      "note": "фото заказчицы; надпись SEOUL убрана Nano Banana Pro 4k (job b2202bbf, 5504x3072); D-047"
     }
   },
   "guide-seoul-food": {

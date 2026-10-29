@@ -52,7 +52,7 @@ const main = await find(slot);
 const wide = main ? await find(`${slot}-wide`) : null;
 const isTemp = main?.key.includes('/temp/') ?? false;
 
-const WIDTHS = [360, 540, 720, 840, 1080, 1440, 2160];
+const WIDTHS = [360, 540, 720, 840, 1080, 1440, 2160, 2880];
 async function srcset(img: ImageMetadata, format: 'avif' | 'webp') {
   const ws = WIDTHS.filter((w) => w <= img.width);
   const out = await Promise.all(ws.map((w) => getImage({ src: img, width: w, format, quality: format === 'avif' ? 64 : 80 })));
