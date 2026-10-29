@@ -72,7 +72,7 @@ const included = [
     <!-- first viewport: the photo, the slogan, one sentence, the action and the authors' hand -->
     <section class="cover" data-cover-section data-chapter="" aria-labelledby="cover-title">
       <div class="cover__media" data-cover-media>
-        <Photo slot="cover" ratio="4 / 5" ratioDesktop="16 / 9" alt={c.cover.caption} tone="dark" fill eager lowPriority />
+        <Photo slot="cover" ratio="9 / 16" ratioDesktop="16 / 9" alt={c.cover.caption} tone="dark" fill eager lowPriority />
       </div>
       <div class="cover__scrim" aria-hidden="true"></div>
       <div class="cover__text wrap" data-cover-text>
@@ -367,19 +367,14 @@ const included = [
     .cover__media {
       position: relative;
       inset: auto;
-      aspect-ratio: 1 / 1;
-    }
-
-    /* owner 29.10: less empty sky above the words — the frame loses its top fifth, the tower and figures stay */
-    .cover__media :global(img) {
-      object-position: 50% 100%;
+      aspect-ratio: 9 / 16;
     }
 
     .cover__media::after {
       content: '';
       position: absolute;
       inset: auto 0 0;
-      height: 16%;
+      height: 30%;
       background: linear-gradient(transparent, #1d1c1a);
     }
 
@@ -387,12 +382,13 @@ const included = [
       display: none;
     }
 
+    /* owner 29.10: the photo (extended down to 9:16, D-050) runs under the whole block,
+       the title starts high so the walking figures stay right behind its last lines */
     .cover__text {
-      margin-top: -220px;
+      margin-top: calc(210px - 177.78vw);
       padding-top: 0;
     }
 
-    /* owner 29.10: the walking figures sit right behind the last lines of the title */
     .cover__title {
       text-shadow: 0 1px 18px rgb(0 0 0 / 0.45);
     }
