@@ -17,7 +17,13 @@
     "source": "higgsfield gpt_image_2_5",
     "job": "47f56544-10dd-45a8-93eb-acb3d1503182",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/prepare.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
   },
   "cover-wide": {
     "ratio": "16:9",
@@ -116,7 +122,13 @@
     "source": "higgsfield gpt_image_2_5",
     "job": "e8e37636-835c-40e3-a58c-0404a19466ec",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/night.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
   },
   "tour-cover": {
     "ratio": "9:16",
@@ -124,5 +136,125 @@
     "job": "ae59504b-a481-4bb1-980a-124b4774b934",
     "rights": "own",
     "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+  },
+  "author-aidana": {
+    "client": {
+      "file": "photos/client/author-aidana.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "author-sofia": {
+    "client": {
+      "file": "photos/client/author-sofia.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "founders": {
+    "client": {
+      "file": "photos/client/founders.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-gyeongbokgung": {
+    "client": {
+      "file": "photos/client/seoul-gyeongbokgung.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-hanok-window": {
+    "client": {
+      "file": "photos/client/seoul-hanok-window.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-hanok-evening": {
+    "client": {
+      "file": "photos/client/seoul-hanok-evening.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-posters": {
+    "client": {
+      "file": "photos/client/seoul-posters.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-han-window": {
+    "client": {
+      "file": "photos/client/seoul-han-window.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-records": {
+    "client": {
+      "file": "photos/client/seoul-records.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-poster-tower": {
+    "client": {
+      "file": "photos/client/seoul-poster-tower.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-rain-night": {
+    "client": {
+      "file": "photos/client/seoul-rain-night.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-poster": {
+    "client": {
+      "file": "photos/client/seoul-poster.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-train": {
+    "client": {
+      "file": "photos/client/seoul-train.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-bridge": {
+    "client": {
+      "file": "photos/client/seoul-bridge.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
+  },
+  "seoul-namsan-terrace": {
+    "client": {
+      "file": "photos/client/seoul-namsan-terrace.jpg",
+      "source": "чат заказчицы 29.10",
+      "rights": "client",
+      "note": "D-048"
+    }
   }
 }

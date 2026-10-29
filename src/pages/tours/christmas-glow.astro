@@ -86,6 +86,8 @@ const days = [
     ],
   },
 ];
+// tour hosts: Aidana and Ina (client 29.10: «Я и Ина за тур»), their texts from «THE FOUNDERS»
+const hosts = c.authors.people.filter((p) => p.name === 'Айдана' || p.name === 'Ина');
 const clips = [
   { file: 'xmas-1', title: 'Рождественский Сеул', text: 'Атмосфера тура', sound: true },
   { file: 'xmas-2', title: 'Рождество в деталях', text: 'Ёлки, банты и десерты', sound: true },
@@ -109,7 +111,7 @@ const included = [
 const faq = [
   { q: 'Какие даты?', a: '23-28 декабря 2026. Программа рассчитана на прилёт в Инчхон 23 декабря к 10:30 и вылет 28 декабря в 11:40.' },
   { q: 'Каким рейсом лететь?', a: 'Подскажем подходящий рейс после заявки - и если вы летите из другого города, тоже.' },
-  { q: 'Кто ведёт тур?', a: 'Айдана и Инкар - два инсайдера по Корее, рядом с вами 24/7.' },
+  { q: 'Кто ведёт тур?', a: 'Айдана и Ина - два инсайдера по Корее, рядом с вами 24/7.' },
   { q: 'Программа может измениться?', a: 'Мы ещё дополняем программу: возможно, добавятся активности, например концерты, - в рамках того же бюджета.' },
   { q: 'Что не входит в стоимость?', a: 'Авиаперелёт, личные расходы и еда. По каждому выходу в программе будут наши рекомендации.' },
   {
@@ -189,6 +191,25 @@ const rooms = [
         }
       </ol>
       <p class="tprice__note t-caption">~$ - сколько закладывать на то, что не входит в стоимость.</p>
+    </section>
+
+    <section class="tsec wrap" aria-labelledby="t7">
+      <h2 class="t-chapter" id="t7" data-reveal="lines">Кто ведёт тур</h2>
+      <div class="thosts">
+        <div class="thosts__photo">
+          <Photo slot="night" ratio="4 / 5" alt="Вечер в баре, ночной Сеул" sizes="(min-width: 1024px) 36vw, 92vw" />
+        </div>
+        <ul class="thosts__list" role="list">
+          {
+            hosts.map((h) => (
+              <li class="thost">
+                <p class="thost__name">{h.name}</p>
+                <p class="thost__text">{nb(h.text)}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </section>
 
     <section class="tsec wrap" aria-labelledby="t6">
@@ -405,6 +426,47 @@ const rooms = [
     font-weight: 300;
     font-stretch: 90%;
     line-height: 1.05;
+  }
+
+  .thosts {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .thosts__photo :global(.photo) {
+    border-radius: var(--r-l);
+  }
+
+  .thosts__list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .thost {
+    padding: 14px 16px 16px;
+    border-radius: var(--r-l);
+    background: var(--paper);
+  }
+
+  .thost__name {
+    font-family: var(--f-display);
+    font-size: 1.25rem;
+  }
+
+  .thost__text {
+    margin-top: 6px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  @media (min-width: 1024px) {
+    .thosts {
+      grid-template-columns: 5fr 7fr;
+      gap: 32px;
+      align-items: start;
+    }
   }
 
   .tconcept {
