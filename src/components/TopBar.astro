@@ -1,7 +1,7 @@
 ---
 // Plain bar: wordmark in Prata, RU / EN, menu. White over the cover photo, ink on plaster after it
 // (html[data-cover] + [data-past-cover], motion/topbar.ts). Menu is a native <dialog> (C10).
-import { BRAND_TITLE } from '../lib/brand';
+import { BRAND_TITLE, WHATSAPP, WHATSAPP_SHOWN } from '../lib/brand';
 import { altPath, localeFrom, t } from '../lib/i18n';
 
 interface Props {
@@ -53,7 +53,7 @@ const home = locale === 'en' ? '/en/' : '/';
     <a href={altPath(Astro.url, 'ru')} aria-current={locale === 'ru' ? 'true' : undefined} hreflang="ru" lang="ru">Русский</a>
     <a href={altPath(Astro.url, 'en')} aria-current={locale === 'en' ? 'true' : undefined} hreflang="en" lang="en">English</a>
   </nav>
-  <p class="menu__foot t-small">{t(locale, 'contacts_todo')}</p>
+  <p class="menu__foot t-small">{t(locale, 'contacts')}: <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener">{WHATSAPP_SHOWN}</a></p>
 </dialog>
 
 <style>

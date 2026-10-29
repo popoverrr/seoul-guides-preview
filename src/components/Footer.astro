@@ -1,6 +1,6 @@
 ---
 // A designed close: the name returns at full width, the authors' seal, plain links.
-import { BRAND_TITLE } from '../lib/brand';
+import { BRAND_TITLE, WHATSAPP, WHATSAPP_SHOWN } from '../lib/brand';
 import { localeFrom, t } from '../lib/i18n';
 import Seal from './Seal.astro';
 
@@ -19,7 +19,9 @@ const locale = localeFrom(Astro.url);
       <p class="foot__note t-body">{note}</p>
       <Seal size={72} />
     </div>
-    <p class="foot__note t-small">{t(locale, 'contacts_todo')}</p>
+    <p class="foot__note t-small">
+      {t(locale, 'contacts')}: <a class="foot__wa" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener">{WHATSAPP_SHOWN}</a>
+    </p>
     <nav class="foot__legal t-small" aria-label="Документы">
       {legal.map((l) => <a href={l.href}>{l.title}</a>)}
       <span>© 2026</span>
@@ -54,6 +56,12 @@ const locale = localeFrom(Astro.url);
     margin-top: 12px;
   }
 
+  .foot__wa {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+
   .foot__legal {
     display: flex;
     flex-wrap: wrap;
@@ -74,7 +82,7 @@ const locale = localeFrom(Astro.url);
   }
 
   /* studio credit in the night-chapter language: an ink capsule, a teal neon tube with one light running
-     around it, the name in Prata, an amber arrow — stands out on the plaster footer */
+     around it, the name in Prata, an amber arrow - stands out on the plaster footer */
   @property --credit-angle {
     syntax: '<angle>';
     inherits: false;

@@ -20,7 +20,7 @@ export function localeFrom(url: URL): Locale {
   return p.startsWith('/en/') || p === '/en' ? 'en' : 'ru';
 }
 
-/** Same page in the other language — root-absolute; scripts/rebase.mjs adds the base on the preview. */
+/** Same page in the other language - root-absolute; scripts/rebase.mjs adds the base on the preview. */
 export function altPath(url: URL, to: Locale): string {
   const path = sitePath(url).replace(/^\/en(\/|$)/, '/');
   return to === 'en' ? `/en${path}` : path;

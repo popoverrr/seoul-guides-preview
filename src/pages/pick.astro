@@ -1,6 +1,6 @@
 ---
 // «Моя подборка» (D-043): the guides picked on the site, the WhatsApp message that will be sent, three steps.
-// Filled on the client from localStorage (motion/pick.ts) — the page itself is static and never indexed.
+// Filled on the client from localStorage (motion/pick.ts) - the page itself is static and never indexed.
 import Base from '../layouts/Base.astro';
 import TopBar from '../components/TopBar.astro';
 import Photo from '../components/Photo.astro';
@@ -9,13 +9,14 @@ import LinkArrow from '../components/LinkArrow.astro';
 import Footer from '../components/Footer.astro';
 import guides from '../data/guides.json';
 import c from '../content/fixtures/public.ru.json';
+import { nb } from '../lib/typo';
 ---
 
 <Base title="Моя подборка" noindex noDock>
   <TopBar />
   <main id="main" class="pk wrap">
     <h1 class="t-head pk__title">Моя подборка</h1>
-    <p class="pk__lead">Каждый гайд покупается отдельно. Здесь — те, что вы отметили «+».</p>
+    <p class="pk__lead">Каждый гайд покупается отдельно. Здесь - те, что вы отметили «+».</p>
 
     <div class="pk__empty" data-pick-empty>
       <p>Подборка пока пустая.</p>
@@ -31,9 +32,9 @@ import c from '../content/fixtures/public.ru.json';
       </div>
 
       <ol class="pk__steps">
-        <li><b>Пишете</b> в WhatsApp — сообщение уже готово</li>
+        <li><b>Пишете</b> в WhatsApp - сообщение уже готово</li>
         <li><b>Оплачиваете</b> из России, Казахстана и других стран</li>
-        <li><b>Получаете</b> логин и пароль — гайды в личном кабинете навсегда</li>
+        <li><b>Получаете</b> логин и пароль - гайды в личном кабинете навсегда</li>
       </ol>
 
       <ButtonPrimary href="#contacts" data-pick-wa data-lead="guide" data-lead-slug="pick" class="pk__cta">
@@ -52,7 +53,7 @@ import c from '../content/fixtures/public.ru.json';
           </a>
           <a class="pk__text" href={`/guides/${g.slug}/`}>
             <span class="pk__name">{g.title_ru}</span>
-            <span class="pk__line">{g.line_ru}</span>
+            <span class="pk__line">{nb(g.line_ru)}</span>
           </a>
           <span class="pk__price">{g.ready ? 'цена скоро' : 'в работе'}</span>
           <button class="pk__x" type="button" data-pick-remove={g.slug} aria-label={`Убрать «${g.title_ru}»`}>

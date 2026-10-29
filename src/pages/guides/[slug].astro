@@ -85,7 +85,7 @@ const hasPreview = g.slug === c.inside.place.guide;
 
     <section class="gsec wrap" aria-labelledby="toc-title">
       <SectionHead id="toc-title" title="Что внутри" lead={toc?.count_note ? `${toc.count_note}. Разделы открываются в личном кабинете после покупки.` : undefined}>
-        {nightCount > 0 && <Note slot="note" mark="arrow-down" rotate={-3}>янтарные — на вечер</Note>}
+        {nightCount > 0 && <Note slot="note" mark="arrow-down" rotate={-3}>янтарные - на вечер</Note>}
       </SectionHead>
       {
         toc && toc.sections.length > 0 ? (
@@ -105,8 +105,8 @@ const hasPreview = g.slug === c.inside.place.guide;
           </ul>
         ) : (
           <div class="tiles-empty">
-            <p class="t-lead">Авторы заканчивают этот гайд — оглавление появится здесь.</p>
-            <Note rotate={-3}>напишите нам — сообщим первыми</Note>
+            <p class="t-lead">Авторы заканчивают этот гайд - оглавление появится здесь.</p>
+            <Note rotate={-3}>напишите нам - сообщим первыми</Note>
           </div>
         )
       }
@@ -129,7 +129,7 @@ const hasPreview = g.slug === c.inside.place.guide;
       <SectionHead id="buy-title" title="Как купить" />
       <div class="tag">
         <span class="tag__hole" aria-hidden="true"></span>
-        <p class="tag__price t-num">цена — скоро</p>
+        <p class="tag__price t-num">цена - скоро</p>
         <p class="tag__note">Оплата из России, Казахстана и других стран. Доступ навсегда, обновления бесплатно.</p>
       </div>
       <ButtonPrimary

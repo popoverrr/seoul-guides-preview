@@ -12,5 +12,6 @@ describe('pick', () => {
   it('builds one WhatsApp message for the selection', () => {
     expect(message(['Seoul Food'])).toBe('Здравствуйте! Хочу купить гайд «Seoul Food» (RU)');
     expect(message(['Seoul Food', 'Бьюти'])).toBe('Здравствуйте! Хочу купить гайды: Seoul Food, Бьюти (RU)');
+    expect(message(['Seoul Food', 'Бьюти'], true)).toBe('Здравствуйте! Хочу купить все гайды комплектом со скидкой: Seoul Food, Бьюти (RU)');
   });
 });

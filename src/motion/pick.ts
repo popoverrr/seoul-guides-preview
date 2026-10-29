@@ -6,6 +6,7 @@
 //   [data-pick-wa]              link to WhatsApp with the picked guides in the message
 //   [data-pick-list]            <ul> on /pick/, filled from <template data-pick-item="slug">
 //   [data-pick-label]           text like «2 гайда»
+//   [data-pick-all="a b c"]     button: puts the whole set in; [data-pick-all-on]/[data-pick-all-off] show its state
 import { WHATSAPP } from '../lib/brand';
 
 const KEY = 'sn-pick';
@@ -35,7 +36,8 @@ export function plural(n: number): string {
   return `${n} ${w}`;
 }
 
-export function message(titles: string[]): string {
+export function message(titles: string[], all = false): string {
+  if (all) return `Здравствуйте! Хочу купить все гайды комплектом со скидкой: ${titles.join(', ')} (RU)`;
   return titles.length === 1
     ? `Здравствуйте! Хочу купить гайд «${titles[0]}» (RU)`
     : `Здравствуйте! Хочу купить гайды: ${titles.join(', ')} (RU)`;
@@ -61,11 +63,19 @@ export function initPick(root: Document): () => void {
     root.querySelectorAll<HTMLElement>('[data-pick-dock]').forEach((el) => el.toggleAttribute('data-on', dockOn));
     root.documentElement.toggleAttribute('data-dock', dockOn);
     const names = list.map((s) => titles[s] ?? s);
+    const set = Object.keys(titles);
+    const all = set.length > 1 && set.every((s) => list.includes(s));
+    root.querySelectorAll<HTMLButtonElement>('[data-pick-all]').forEach((b) => {
+      b.hidden = false;
+      b.disabled = all;
+      b.querySelector<HTMLElement>('[data-pick-all-on]')?.toggleAttribute('hidden', !all);
+      b.querySelector<HTMLElement>('[data-pick-all-off]')?.toggleAttribute('hidden', all);
+    });
     root.querySelectorAll<HTMLAnchorElement>('[data-pick-wa]').forEach((a) => {
-      a.href = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message(names))}` : '#contacts';
+      a.href = WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message(names, all))}` : '#contacts';
       a.dataset.leadOption = list.join(',').slice(0, 64);
     });
-    root.querySelectorAll<HTMLElement>('[data-pick-message]').forEach((el) => (el.textContent = `«${message(names)}»`));
+    root.querySelectorAll<HTMLElement>('[data-pick-message]').forEach((el) => (el.textContent = `«${message(names, all)}»`));
     const ul = root.querySelector<HTMLElement>('[data-pick-list]');
     if (ul) {
       ul.replaceChildren(
@@ -81,6 +91,15 @@ export function initPick(root: Document): () => void {
     const t = e.target as HTMLElement;
     const toggle = t.closest<HTMLElement>('[data-pick-toggle]');
     const remove = t.closest<HTMLElement>('[data-pick-remove]');
+    const every = t.closest<HTMLElement>('[data-pick-all]');
+    if (every) {
+      e.preventDefault();
+      const add = (every.dataset.pickAll ?? '').split(' ').filter(Boolean);
+      list = [...list, ...add.filter((x) => !list.includes(x))];
+      write(list);
+      render();
+      return;
+    }
     const slug = toggle?.dataset.pickToggle ?? remove?.dataset.pickRemove;
     if (!slug) return;
     e.preventDefault();

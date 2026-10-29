@@ -3,7 +3,7 @@ import { nb, typo } from './typo';
 
 describe('typo', () => {
   it('binds short words and dashes', () => {
-    expect(nb('Гайд в кармане — и на улице')).toBe('Гайд в кармане — и на улице');
+    expect(nb('Гайд в кармане - и на улице')).toBe('Гайд в кармане - и на улице');
   });
   it('groups prices', () => {
     expect(nb('от 1 300 000 ₸')).toBe('от 1 300 000 ₸');

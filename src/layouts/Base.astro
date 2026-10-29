@@ -20,7 +20,7 @@ interface Props {
 
 const { title, description = '', noindex = false, cover = false, noDock = false } = Astro.props;
 const locale = localeFrom(Astro.url);
-const fullTitle = title ? `${title} — ${BRAND}` : BRAND;
+const fullTitle = title ? `${title} - ${BRAND}` : BRAND;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 

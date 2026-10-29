@@ -1,5 +1,5 @@
 ---
-// Chapter III: a preview of a closed guide page — one place card as in the reader (docs/02 § 7 PlaceCard).
+// Chapter III: a preview of a closed guide page - one place card as in the reader (docs/02 § 7 PlaceCard).
 // Name and address are group A, verbatim from the source (D-022). No Naver badge on it: the source has no
 // Naver data (Q19); the Naver note under the card stays TODO(client) until the client answers.
 import Photo from './Photo.astro';
@@ -18,7 +18,7 @@ interface Props {
     src_locator: string;
   };
   note?: string;
-  /** the authors' handwritten tip — paraphrase of a tip that is in the source */
+  /** the authors' handwritten tip - paraphrase of a tip that is in the source */
   hand?: string;
 }
 
@@ -65,7 +65,7 @@ const guide = guides.find((g) => g.slug === place.guide);
       </div>
       <div class="card__more" aria-hidden="true">
         <p>Заметка автора: что заказать, когда приходить, как бронировать.</p>
-        <p>Следующее место раздела — в двух минутах пешком.</p>
+        <p>Следующее место раздела - в двух минутах пешком.</p>
       </div>
     </article>
   </div>

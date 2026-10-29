@@ -18,7 +18,7 @@ const H = level;
 
 <header class="head">
   <p class="head__run t-caption">
-    <span class="head__label t-label">{num} — {label}</span>
+    <span class="head__label t-label">{num} - {label}</span>
     {aside && <span>{aside}</span>}
   </p>
   <H class:list={['head__title', size === 'hero' ? 't-hero' : 't-chapter']} data-reveal="lines" set:html={typo(title)} />

@@ -1,0 +1,120 @@
+---
+// Videos from the authors' trips (client 28.10, D-046): a row of vertical clips that scrolls sideways.
+// Nothing loads until a clip is played (preload="none" + poster); playing one pauses the others.
+// Files live in public/media (re-encoded 720p from the client's originals). The ad reel slot waits for her edit.
+interface Clip {
+  file: string;
+  title: string;
+  text: string;
+  sound?: boolean;
+}
+
+interface Props {
+  clips: Clip[];
+  label: string;
+}
+
+const { clips, label } = Astro.props;
+---
+
+<div class="mc" role="region" aria-label={label}>
+  <ul class="mc__row" role="list">
+    {
+      clips.map((c) => (
+        <li class="mc__item">
+          <video
+            class="mc__video"
+            src={`/media/${c.file}.mp4`}
+            poster={`/media/${c.file}.webp`}
+            preload="none"
+            playsinline
+            controls
+            muted={!c.sound}
+            width="720"
+            height="1280"
+            aria-label={c.title}
+            data-mc-video
+          />
+          <p class="mc__title">{c.title}</p>
+          <p class="mc__text">{c.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  // one clip at a time
+  document.addEventListener(
+    'play',
+    (e) => {
+      const v = e.target;
+      if (!(v instanceof HTMLVideoElement) || !v.hasAttribute('data-mc-video')) return;
+      document.querySelectorAll<HTMLVideoElement>('[data-mc-video]').forEach((o) => o !== v && o.pause());
+    },
+    true,
+  );
+</script>
+
+<style>
+  .mc {
+    margin-inline: calc(var(--gutter) * -1);
+  }
+
+  .mc__row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(62vw, 260px);
+    gap: 12px;
+    overflow-x: auto;
+    padding-inline: var(--gutter);
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .mc__row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mc__item {
+    scroll-snap-align: start;
+  }
+
+  .mc__video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border-radius: var(--r-l);
+    background: #2a2824;
+  }
+
+  .mc__title {
+    margin-top: 10px;
+    font-family: var(--f-display);
+    font-size: 1.0625rem;
+    line-height: 1.15;
+  }
+
+  .mc__text {
+    margin-top: 2px;
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+  }
+
+  @media (min-width: 1024px) {
+    .mc {
+      margin-inline: 0;
+    }
+
+    .mc__row {
+      grid-auto-columns: 240px;
+      gap: 16px;
+      padding-inline: 0;
+      scroll-padding-inline: 0;
+    }
+  }
+</style>

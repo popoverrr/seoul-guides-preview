@@ -1,9 +1,10 @@
 ---
 // All guides at once (owner 28.10: the choice must be simple and obvious): a 2-column grid on phones,
-// 3 on desktop. «Что вам интересно в Сеуле?» dims the guides that do not match — pure CSS (:has + radios).
+// 3 on desktop. «Что вам интересно в Сеуле?» dims the guides that do not match - pure CSS (:has + radios).
 // Each card: photo, hangul emblem, one line «что внутри», price, «+» to «Моя подборка» (motion/pick.ts).
 import guides from '../data/guides.json';
 import Photo from './Photo.astro';
+import { nb } from '../lib/typo';
 
 const interests = [
   { code: 'all', name: 'Всё' },
@@ -41,14 +42,14 @@ const rules = interests
         <li class="gcard" data-i={g.interests.join(' ')} data-pick-card style={`--patch:var(${g.patch})`}>
           <a class="gcard__link" href={`/guides/${g.slug}/`} data-cursor="Открыть">
             <span class="gcard__img" transition:name={`guide-photo-${g.slug}`}>
-              <Photo slot={`guide-${g.slug}`} ratio="16 / 10" alt="" sizes="(min-width: 1024px) 30vw, 46vw" />
+              <Photo slot={`guide-${g.slug}`} ratio="4 / 5" alt="" sizes="(min-width: 1024px) 30vw, 46vw" />
               <span class="gcard__ko t-emblem" lang="ko" aria-hidden="true" transition:name={`guide-emblem-${g.slug}`}>
                 {g.emblem}
               </span>
               {!g.ready && <span class="gcard__soon">скоро</span>}
             </span>
             <span class="gcard__name">{g.title_ru}</span>
-            <span class="gcard__line">{g.line_ru}</span>
+            <span class="gcard__line">{nb(g.line_ru)}</span>
           </a>
           <div class="gcard__foot">
             <span class="gcard__price">{g.ready ? 'цена скоро' : 'в работе'}</span>
@@ -70,6 +71,18 @@ const rules = interests
       ))
     }
   </ul>
+
+  <!-- the whole set (client 27.10: «приобретение гайдов вместе - скидка хорошая»; partners' gift - 27.10, Q25) -->
+  <div class="set" data-pick-set>
+    <div class="set__text">
+      <p class="set__title">Все {guides.length} гайдов - со скидкой</p>
+      <p class="set__sub">Комплектом выгоднее, а ещё - комплимент от наших партнёров в Сеуле. Размер скидки подскажем в WhatsApp.</p>
+    </div>
+    <button class="set__btn" type="button" data-pick-all={guides.map((x) => x.slug).join(' ')} hidden>
+      <span data-pick-all-off>Взять все</span>
+      <span data-pick-all-on hidden>Все в подборке ✓</span>
+    </button>
+  </div>
 </div>
 
 <Fragment set:html={`<style>${rules}</style>`} />
@@ -259,7 +272,56 @@ const rules = interests
     color: var(--green-ink);
   }
 
+  .set {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 16px;
+    margin-top: 12px;
+    padding: 16px 16px 16px 18px;
+    border-radius: var(--r-l);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .set__text {
+    flex: 1 1 220px;
+  }
+
+  .set__title {
+    font-family: var(--f-display);
+    font-size: 1.25rem;
+    line-height: 1.15;
+  }
+
+  .set__sub {
+    margin-top: 4px;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: #c9c2b6;
+  }
+
+  .set__btn {
+    min-height: 48px;
+    padding: 0 20px;
+    border-radius: var(--r-pill);
+    background: var(--green);
+    color: var(--green-ink);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .set__btn:active {
+    transform: scale(0.98);
+  }
+
   @media (min-width: 1024px) {
+    .set {
+      margin-top: 16px;
+      padding: 20px 24px;
+    }
+
     .grid {
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;

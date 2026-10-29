@@ -1,4 +1,4 @@
-/* Reset + page — docs/02. Order of layers: reset, base, type, components, utilities. */
+/* Reset + page - docs/02. Order of layers: reset, base, type, components, utilities. */
 @layer reset, base, type, components, utilities;
 
 @layer reset {

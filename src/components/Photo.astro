@@ -1,6 +1,6 @@
 ---
 // Photo slot (docs/02 § 8). Looks for src/assets/photos/{client,site,temp}/<slot>.(jpg|jpeg|png|webp|avif):
-// client photos win, then site photos (generated for the site, permanent — D-032), then temporary ones.
+// client photos win, then site photos (generated for the site, permanent - D-032), then temporary ones.
 // <slot>-wide, if present, is the desktop crop (≥1024px) via <picture><source media>. No file → a tonal plate.
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -12,7 +12,7 @@ interface Props {
   /** different crop on desktop (≥1024), e.g. "16 / 9" */
   ratioDesktop?: string;
   alt: string;
-  /** what should be in the frame — shown on the plate */
+  /** what should be in the frame - shown on the plate */
   brief?: string;
   tone?: 'day' | 'dark';
   eager?: boolean;

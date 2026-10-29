@@ -1,5 +1,5 @@
 ---
-// Mock-up (noindex) of the proposed guide-choice flow — 4 phone screens 390×844 for discussion with the owner.
+// Mock-up (noindex) of the proposed guide-choice flow - 4 phone screens 390×844 for discussion with the owner.
 // Not linked from the site. Real fonts, photos and tokens.
 import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
@@ -15,8 +15,8 @@ const short: Record<string, string> = {
   beauty: 'Бьюти',
 };
 const lines: Record<string, string> = {
-  'seoul-food': 'кафе, рестораны и бары — 94 места',
-  'shopping-women': 'концепт-сторы и винтаж — 88 магазинов',
+  'seoul-food': 'кафе, рестораны и бары - 94 места',
+  'shopping-women': 'концепт-сторы и винтаж - 88 магазинов',
   'shopping-men': 'мастерские и марки',
   culture: 'районы, где жить, мастер-классы',
   kids: 'досуг и кафе для детей',
@@ -26,7 +26,7 @@ const interests = ['Еда', 'Шопинг', 'Бьюти', 'С детьми', '�
 const picked = new Set(['seoul-food', 'shopping-women']);
 ---
 
-<Base title="Выбор гайдов — макет" noindex>
+<Base title="Выбор гайдов - макет" noindex>
   <div class="frames">
     <!-- 1. cover with the six guides as buttons -->
     <section class="frame" data-frame-id="1">
@@ -48,7 +48,7 @@ const picked = new Set(['seoul-food', 'shopping-women']);
           <span class="cta">Подобрать гайд ↓</span>
         </div>
       </div>
-      <p class="cap">1 · Шесть гайдов видны на первом экране — тап ведёт в гайд</p>
+      <p class="cap">1 · Шесть гайдов видны на первом экране - тап ведёт в гайд</p>
     </section>
 
     <!-- 2. grid 2×3 with interest chips -->
@@ -56,7 +56,7 @@ const picked = new Set(['seoul-food', 'shopping-women']);
       <div class="bar"><span class="brand">Seoul Notes</span><span class="gbtn">Гайды</span><span>Меню</span></div>
       <div class="pad">
         <h2 class="t-head h2">Шесть гайдов</h2>
-        <p class="sub">Каждый покупается отдельно — берите только нужные.</p>
+        <p class="sub">Каждый покупается отдельно - берите только нужные.</p>
         <p class="q">Что вам интересно в Сеуле?</p>
         <ul class="chips" role="list">
           {interests.map((x, i) => <li class:list={{ on: i < 2 }}>{x}</li>)}
@@ -74,7 +74,7 @@ const picked = new Set(['seoul-food', 'shopping-women']);
                 <p class="card__name">{g.title_ru}</p>
                 <p class="card__line">{lines[g.slug]}</p>
                 <div class="card__foot">
-                  <span class="price">{ready.has(g.slug) ? '— ₽' : 'скоро'}</span>
+                  <span class="price">{ready.has(g.slug) ? '- ₽' : 'скоро'}</span>
                   <span class="add">{picked.has(g.slug) ? '✓' : '+'}</span>
                 </div>
               </li>
@@ -82,7 +82,7 @@ const picked = new Set(['seoul-food', 'shopping-women']);
           })}
         </ul>
       </div>
-      <p class="cap">2 · Все шесть сразу, выбор по интересу, «+» — в подборку</p>
+      <p class="cap">2 · Все шесть сразу, выбор по интересу, «+» - в подборку</p>
     </section>
 
     <!-- 3. selection bar -->
@@ -95,7 +95,7 @@ const picked = new Set(['seoul-food', 'shopping-women']);
             <li style={`--patch:var(${g.patch})`}>
               <div class="sel__img"><Photo slot={`guide-${g.slug}`} ratio="1 / 1" alt="" sizes="72px" /></div>
               <div><p class="card__name">{g.title_ru}</p><p class="card__line">{lines[g.slug]}</p></div>
-              <span class="price">— ₽</span>
+              <span class="price">- ₽</span>
               <span class="x">×</span>
             </li>
           ))}
@@ -105,16 +105,16 @@ const picked = new Set(['seoul-food', 'shopping-women']);
           <p class="msg__v">«Здравствуйте! Хочу купить гайды: Seoul Food, Женский шопинг (RU)»</p>
         </div>
         <ol class="steps3" role="list">
-          <li><b>Пишете</b> в WhatsApp — сообщение готово</li>
+          <li><b>Пишете</b> в WhatsApp - сообщение готово</li>
           <li><b>Оплачиваете</b> из России, Казахстана и других стран</li>
-          <li><b>Получаете</b> логин и пароль — гайды в кабинете навсегда</li>
+          <li><b>Получаете</b> логин и пароль - гайды в кабинете навсегда</li>
         </ol>
       </div>
       <div class="dock">
-        <span><b>2 гайда</b> · — ₽</span>
+        <span><b>2 гайда</b> · - ₽</span>
         <span class="dock__btn">Написать в WhatsApp</span>
       </div>
-      <p class="cap">3 · Плашка подборки внизу на любой странице — одно сообщение на все гайды</p>
+      <p class="cap">3 · Плашка подборки внизу на любой странице - одно сообщение на все гайды</p>
     </section>
 
     <!-- 4. guide page with switcher and sticky buy bar -->
@@ -132,7 +132,7 @@ const picked = new Set(['seoul-food', 'shopping-women']);
       </div>
       <div class="pad">
         <h2 class="t-head h2">Seoul Food</h2>
-        <p class="sub">Кафе, рестораны и Nightlife — 94 места в 11 районах</p>
+        <p class="sub">Кафе, рестораны и Nightlife - 94 места в 11 районах</p>
         <ul class="facts" role="list">
           <li>Страница в кабинете</li>
           <li>Доступ навсегда</li>
@@ -140,7 +140,7 @@ const picked = new Set(['seoul-food', 'shopping-women']);
         </ul>
       </div>
       <div class="dock">
-        <span><b>Seoul Food</b> · — ₽</span>
+        <span><b>Seoul Food</b> · - ₽</span>
         <span class="dock__ghost">+ в подборку</span>
         <span class="dock__btn small">Купить</span>
       </div>

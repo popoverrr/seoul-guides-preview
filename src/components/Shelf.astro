@@ -1,7 +1,7 @@
 ---
 // The signature of «Флагман + тетрадь»: six guides as objects on travertine plinths with museum labels
 // (composition = districts, volume = places, format). «Куда вы едете?» lights the guides that cover a
-// district — pure CSS (:has + radio inputs), so it works without JS and from the keyboard.
+// district - pure CSS (:has + radio inputs), so it works without JS and from the keyboard.
 // Data: web/src/data/guides.json (districts and volumes from reference/content-audit only).
 import guides from '../data/guides.json';
 import Photo from './Photo.astro';
@@ -16,7 +16,7 @@ const districts = [
   { code: 'gangnam', name: 'Каннам' },
   { code: 'euljiro', name: 'Ыльджиро' },
 ];
-// plinth heights (px, mobile; desktop scales) — the tallest is the largest guide
+// plinth heights (px, mobile; desktop scales) - the tallest is the largest guide
 const heights = [150, 120, 96, 132, 104, 116];
 // one rule per district: the guides that cover it are lit, the rest step back
 const rules = districts
@@ -99,7 +99,7 @@ const rules = districts
     position: relative;
   }
 
-  /* — «Куда вы едете?» — */
+  /* - «Куда вы едете?» - */
   .pick {
     min-width: 0; /* a fieldset is min-content wide by default: the chip row would widen the page */
     margin: 0;
@@ -165,7 +165,7 @@ const rules = districts
     margin: 14px 0 0 6px;
   }
 
-  /* — the shelf — */
+  /* - the shelf - */
   .row {
     position: relative;
     z-index: 1;
@@ -262,7 +262,7 @@ const rules = districts
     color: rgb(26 25 22 / 0.38);
   }
 
-  /* the museum label — the one place thin lines live (the client's «тонкие линии») */
+  /* the museum label - the one place thin lines live (the client's «тонкие линии») */
   .label {
     display: grid;
     align-content: start;

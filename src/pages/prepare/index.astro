@@ -1,7 +1,7 @@
 ---
-// Free part «Перед поездкой» (docs/01 § 5 I, content-audit/01 § 3: pages 3–11 of the general PDF)
+// Free part «Перед поездкой» (docs/01 § 5 I, content-audit/01 § 3: pages 3-11 of the general PDF)
 // in the «Флагман + тетрадь» world: chips for the contents, one paper card per topic.
-// Facts here come from the source; the authors' full texts arrive with P7 (import of pages 3–11).
+// Facts here come from the source; the authors' full texts arrive with P7 (import of pages 3-11).
 import Base from '../../layouts/Base.astro';
 import TopBar from '../../components/TopBar.astro';
 import Photo from '../../components/Photo.astro';
@@ -12,8 +12,8 @@ import c from '../../content/fixtures/public.ru.json';
 import { nb } from '../../lib/typo';
 
 const body: Record<string, { page: string; tiles?: [string, string][]; kind?: 'numbers' | 'apps' }> = {
-  letter: { page: 'стр. 3–4' },
-  etiquette: { page: 'стр. 6–7' },
+  letter: { page: 'стр. 3-4' },
+  etiquette: { page: 'стр. 6-7' },
   documents: { page: 'стр. 9' },
   money: { page: 'стр. 9' },
   connection: { page: 'стр. 10' },
@@ -84,7 +84,7 @@ const body: Record<string, { page: string; tiles?: [string, string][]; kind?: 'n
                   ))}
                 </ul>
               )}
-              <p class="card__todo">[текст авторов — общий гайд, {b?.page}]</p>
+              <p class="card__todo">[текст авторов - общий гайд, {b?.page}]</p>
             </section>
           );
         })

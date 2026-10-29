@@ -11,11 +11,11 @@
   "open": "Открыть",
   "login": "Войти",
   "photo_slot": "Фото",
-  "naver_badge": "Данные Naver — без изменений",
+  "naver_badge": "Данные Naver - без изменений",
   "lang_ru": "RU",
   "lang_en": "EN",
-  "price_todo": "цена — скоро",
+  "price_todo": "цена - скоро",
   "more": "Подробнее",
   "all_guides": "Все гайды",
-  "contacts_todo": "Контакты появятся до запуска"
+  "contacts": "WhatsApp"
 }

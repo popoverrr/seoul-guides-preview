@@ -4,7 +4,13 @@
     "source": "higgsfield gpt_image_2_5",
     "job": "6343701b-0ecb-432b-a4f6-1c22c4cdcf83",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/cover.jpg",
+      "source": "чат заказчицы 28.10, IMG_5629.JPG (вертикальное 4:5)",
+      "rights": "client",
+      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+    }
   },
   "prepare": {
     "ratio": "4:5",
@@ -18,7 +24,13 @@
     "source": "higgsfield gpt_image_2_5",
     "job": "e52b07be-513d-4e35-b4b4-76143a899316",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/cover-wide.jpg",
+      "source": "чат заказчицы 28.10, IMG_5625.JPG (горизонтальное 16:9)",
+      "rights": "client",
+      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+    }
   },
   "guide-seoul-food": {
     "ratio": "4:5",
@@ -32,35 +44,65 @@
     "source": "higgsfield gpt_image_2_5",
     "job": "3397665f-7c4a-4cd0-b244-f3bec4543594",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/guide-shopping-women.jpg",
+      "source": "чат заказчицы 28.10, IMG_5632.PNG",
+      "rights": "client",
+      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+    }
   },
   "guide-shopping-men": {
     "ratio": "4:5",
     "source": "higgsfield gpt_image_2_5",
     "job": "bd6162e9-929f-4065-a24a-97bffa901a2b",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/guide-shopping-men.jpg",
+      "source": "чат заказчицы 28.10, IMG_5636.PNG",
+      "rights": "client",
+      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+    }
   },
   "guide-culture": {
     "ratio": "4:5",
     "source": "higgsfield gpt_image_2_5",
     "job": "8b959bce-c965-4bb3-9c15-8dfb2493e0fa",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/guide-culture.jpg",
+      "source": "чат заказчицы 28.10, IMG_5639.PNG",
+      "rights": "client",
+      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+    }
   },
   "guide-kids": {
     "ratio": "4:5",
     "source": "higgsfield gpt_image_2_5",
     "job": "f3734be3-22aa-4631-a03d-995150137e70",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/guide-kids.jpg",
+      "source": "чат заказчицы 28.10, IMG_5641.PNG",
+      "rights": "client",
+      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+    }
   },
   "guide-beauty": {
     "ratio": "4:5",
     "source": "higgsfield gpt_image_2_5",
     "job": "292a533e-a366-45d5-a204-7fa338b442e6",
     "rights": "own",
-    "note": "сгенерировано для сайта, постоянный кадр (D-032)"
+    "note": "сгенерировано для сайта, постоянный кадр (D-032)",
+    "client": {
+      "file": "photos/client/guide-beauty.jpg",
+      "source": "чат заказчицы 28.10, IMG_5638.PNG",
+      "rights": "client",
+      "note": "фото заказчицы, приоритет над photos/site (D-046)"
+    }
   },
   "inside-place": {
     "ratio": "4:3",

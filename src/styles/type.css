@@ -1,4 +1,4 @@
-/* Type roles — «Флагман + тетрадь». Prata sets every heading (one weight, no italic accents);
+/* Type roles - «Флагман + тетрадь». Prata sets every heading (one weight, no italic accents);
    Commissioner sets text and labels in sentence case; Caveat is reserved for the authors' notes. */
 @layer type {
   .t-display,

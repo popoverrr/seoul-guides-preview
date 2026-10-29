@@ -59,7 +59,7 @@ export async function init(root: Document, ctx: Ctx): Promise<() => void> {
       }
     });
 
-    // I4: delicate reaction to the cursor — frames follow ≤ 8px (lerp .08), "Открыть" label near links
+    // I4: delicate reaction to the cursor - frames follow ≤ 8px (lerp .08), "Открыть" label near links
     mm.add('(pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
       const frames = [...root.querySelectorAll<HTMLElement>('[data-frame] .photo')];
       const label = document.createElement('span');
