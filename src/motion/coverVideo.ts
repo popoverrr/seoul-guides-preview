@@ -1,6 +1,6 @@
 // Living cover (owner 29.10, D-051): the client's photo stays the first paint and the LCP; after the page has loaded
-// and the browser is idle, a 5-second clip of the same frame (clouds drift, the four people walk on) fades in over it,
-// plays once and holds its last frame. Phones only (the clip is 9:16); never with reduced motion or Save-Data.
+// and the browser is idle, a 3.8-second seamless loop of the same frame (clouds drift, the four people walk on; the tail
+// crossfades into the head) fades in over it and keeps looping. Phones only (9:16); never with reduced motion or Save-Data.
 export function initCoverVideo(root: Document): () => void {
   const video = root.querySelector<HTMLVideoElement>('[data-cover-video]');
   if (!video) return () => {};
@@ -23,8 +23,17 @@ export function initCoverVideo(root: Document): () => void {
   if (root.readyState === 'complete') idle();
   else addEventListener('load', idle, { once: true });
 
+  // no point decoding while the cover is scrolled away
+  const io = new IntersectionObserver(([e]) => {
+    if (!video.hasAttribute('data-on')) return;
+    if (e?.isIntersecting) void video.play().catch(() => {});
+    else video.pause();
+  });
+  io.observe(video);
+
   return () => {
     cancelled = true;
+    io.disconnect();
     video.pause();
   };
 }

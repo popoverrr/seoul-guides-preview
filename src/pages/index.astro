@@ -74,7 +74,7 @@ const included = [
       <div class="cover__media" data-cover-media>
         <Photo slot="cover" ratio="9 / 16" ratioDesktop="16 / 9" alt={c.cover.caption} tone="dark" fill eager lowPriority />
         <!-- the same frame, alive: loaded only after the page, phones only (motion/coverVideo.ts, D-051) -->
-        <video class="cover__video" src="/media/cover.mp4" muted playsinline preload="none" aria-hidden="true" tabindex="-1" data-cover-video></video>
+        <video class="cover__video" src="/media/cover.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-cover-video></video>
       </div>
       <div class="cover__scrim" aria-hidden="true"></div>
       <div class="cover__text wrap" data-cover-text>
