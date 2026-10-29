@@ -6,6 +6,7 @@ import { initInkmap } from './inkmap';
 import { initLeads } from './leads';
 import { initNotes } from './notes';
 import { initPick } from './pick';
+import { initCoverVideo } from './coverVideo';
 
 type Cleanup = () => void;
 let cleanups: Cleanup[] = [];
@@ -40,7 +41,7 @@ async function heavy(): Promise<Cleanup[]> {
 }
 
 function start() {
-  cleanups = [initTopbar(document), initMenu(document), initInkmap(document), initLeads(document), initNotes(document), initPick(document)];
+  cleanups = [initTopbar(document), initMenu(document), initInkmap(document), initLeads(document), initNotes(document), initPick(document), initCoverVideo(document)];
   if (reduced()) return;
   let alive = true;
   cleanups.push(() => {
