@@ -379,8 +379,8 @@ const included = [
       content: '';
       position: absolute;
       inset: auto 0 0;
-      height: 22%;
-      background: linear-gradient(transparent, #1d1c1a);
+      height: 45%;
+      background: linear-gradient(transparent, rgb(29 28 26 / 0.7) 55%, #1d1c1a);
     }
 
     .cover__scrim {
@@ -388,7 +388,7 @@ const included = [
     }
 
     .cover__text {
-      margin-top: -20px;
+      margin-top: -96px;
       padding-top: 0;
     }
   }
@@ -402,6 +402,11 @@ const included = [
 
     .cover__text {
       margin-top: -16px;
+    }
+
+    .cover__media::after {
+      height: 22%;
+      background: linear-gradient(transparent, #1d1c1a);
     }
   }
 
