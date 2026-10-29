@@ -367,7 +367,12 @@ const included = [
     .cover__media {
       position: relative;
       inset: auto;
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 1 / 1;
+    }
+
+    /* owner 29.10: less empty sky above the words — the frame loses its top fifth, the tower and figures stay */
+    .cover__media :global(img) {
+      object-position: 50% 100%;
     }
 
     .cover__media::after {
@@ -383,7 +388,7 @@ const included = [
     }
 
     .cover__text {
-      margin-top: -8px;
+      margin-top: -20px;
       padding-top: 0;
     }
   }
