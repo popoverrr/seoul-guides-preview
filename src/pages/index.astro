@@ -379,8 +379,8 @@ const included = [
       content: '';
       position: absolute;
       inset: auto 0 0;
-      height: 45%;
-      background: linear-gradient(transparent, rgb(29 28 26 / 0.7) 55%, #1d1c1a);
+      height: 16%;
+      background: linear-gradient(transparent, #1d1c1a);
     }
 
     .cover__scrim {
@@ -388,8 +388,13 @@ const included = [
     }
 
     .cover__text {
-      margin-top: -96px;
+      margin-top: -220px;
       padding-top: 0;
+    }
+
+    /* owner 29.10: the walking figures sit right behind the last lines of the title */
+    .cover__title {
+      text-shadow: 0 1px 18px rgb(0 0 0 / 0.45);
     }
   }
 
