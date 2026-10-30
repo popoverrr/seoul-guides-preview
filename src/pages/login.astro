@@ -1,0 +1,212 @@
+---
+// Вход (docs/01 § 3, C2): email or phone + password, one paper card on plaster. Forgot password → WhatsApp (docs/06 § 3).
+// Works without the site's JS bundle only as far as showing the form; signing in needs the API (P3).
+import Base from '../layouts/Base.astro';
+import TopBar from '../components/TopBar.astro';
+import { WHATSAPP } from '../lib/brand';
+
+const forgot = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Здравствуйте! Не могу войти в кабинет KOREA HAUS, помогите восстановить пароль.')}`;
+---
+
+<Base title="Вход" noindex noDock>
+  <TopBar />
+  <main id="main" class="login wrap">
+    <form class="login__card" data-login novalidate>
+      <h1 class="t-head login__title">Вход в кабинет</h1>
+      <p class="login__lead">Логин и пароль приходят в WhatsApp после покупки гайда.</p>
+
+      <label class="field">
+        <span class="field__label">Email или телефон</span>
+        <input class="field__input" name="login" type="text" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" required />
+      </label>
+      <label class="field">
+        <span class="field__label">Пароль</span>
+        <span class="field__row">
+          <input class="field__input" name="password" type="password" autocomplete="current-password" required />
+          <button class="field__eye" type="button" data-eye aria-pressed="false">Показать</button>
+        </span>
+      </label>
+
+      <p class="login__error" role="alert" data-error hidden></p>
+
+      <button class="login__go" type="submit" data-go>Войти</button>
+      <a class="login__forgot" href={forgot} target="_blank" rel="noopener">Забыли пароль? Напишите нам в WhatsApp</a>
+    </form>
+  </main>
+</Base>
+
+<script>
+  import { api, href, humanError, me, type Me } from '../lib/api';
+
+  // only same-site paths may be a «next» target
+  const next = (): string => {
+    const n = new URLSearchParams(location.search).get('next') ?? '';
+    return n.startsWith('/') && !n.startsWith('//') ? n : href('/account/');
+  };
+
+  async function init() {
+    const form = document.querySelector<HTMLFormElement>('[data-login]');
+    if (!form || form.dataset.ready) return;
+    form.dataset.ready = '1';
+    const error = form.querySelector<HTMLElement>('[data-error]')!;
+    const go = form.querySelector<HTMLButtonElement>('[data-go]')!;
+    const eye = form.querySelector<HTMLButtonElement>('[data-eye]')!;
+    const pw = form.querySelector<HTMLInputElement>('input[name=password]')!;
+
+    // already signed in → straight to the guides
+    me()
+      .then((u) => u && location.replace(next()))
+      .catch(() => {});
+
+    eye.addEventListener('click', () => {
+      const show = pw.type === 'password';
+      pw.type = show ? 'text' : 'password';
+      eye.setAttribute('aria-pressed', String(show));
+      eye.textContent = show ? 'Скрыть' : 'Показать';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const login = String(data.get('login') ?? '').trim();
+      const password = String(data.get('password') ?? '');
+      error.hidden = true;
+      if (!login || !password) {
+        error.textContent = 'Введите логин и пароль.';
+        error.hidden = false;
+        return;
+      }
+      go.disabled = true;
+      go.textContent = 'Входим…';
+      try {
+        await api<{ user: Me }>('POST', '/auth/login', { login, password });
+        location.replace(next());
+      } catch (err) {
+        error.textContent = humanError(err);
+        error.hidden = false;
+        go.disabled = false;
+        go.textContent = 'Войти';
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+  .login {
+    display: grid;
+    place-items: start center;
+    min-height: 100svh;
+    padding-top: calc(var(--bar-h) + 24px);
+    padding-bottom: 48px;
+  }
+
+  .login__card {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+    max-width: 440px;
+    padding: 24px 20px 22px;
+    border-radius: var(--r-l);
+    background: var(--paper);
+  }
+
+  .login__lead {
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .field__label {
+    font-size: var(--s-small);
+    color: var(--ink-2);
+  }
+
+  .field__row {
+    position: relative;
+    display: block;
+  }
+
+  .field__input {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-m);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem; /* 16px: no zoom on iPhone */
+  }
+
+  .field__row .field__input {
+    padding-right: 96px;
+  }
+
+  .field__input:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 1px;
+    border-color: var(--green);
+  }
+
+  .field__eye {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: var(--r-pill);
+    font-size: var(--s-small);
+    color: var(--ink-2);
+  }
+
+  .login__error {
+    padding: 10px 14px;
+    border-radius: var(--r-m);
+    background: #f4dcd6;
+    color: #7a2318;
+    font-size: 0.9375rem;
+  }
+
+  .login__go {
+    min-height: 52px;
+    margin-top: 4px;
+    border-radius: var(--r-pill);
+    background: var(--green);
+    color: var(--green-ink);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .login__go:disabled {
+    opacity: 0.7;
+  }
+
+  .login__go:active {
+    transform: scale(0.98);
+  }
+
+  .login__forgot {
+    justify-self: center;
+    padding: 8px;
+    font-size: var(--s-small);
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 1024px) {
+    .login {
+      padding-top: calc(var(--bar-h) + 64px);
+    }
+
+    .login__card {
+      padding: 32px 32px 26px;
+    }
+  }
+</style>

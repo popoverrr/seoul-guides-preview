@@ -1,0 +1,29 @@
+# Plesk / Apache (docs/04 § 6, docs/06 § 4). httpdocs/ = web/dist, httpdocs/api/ = the PHP API.
+Options -Indexes
+RewriteEngine On
+
+# API front controller
+RewriteRule ^api/ api/public/index.php [L,QSA]
+
+# the guide reader routes on the client: every /account/guide/* is the one shell (P4, D-052)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(en/)?account/guide/.+ /$1account/guide/index.html [L]
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(self)"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://vk.com; base-uri 'self'; form-action 'self' https://wa.me"
+  # the account is never indexed
+  <If "%{REQUEST_URI} =~ m#^/(en/)?(account|login|admin)/#">
+    Header always set X-Robots-Tag "noindex, nofollow"
+    Header always set Cache-Control "no-store"
+  </If>
+  <If "%{REQUEST_URI} =~ m#^/(_astro|fonts)/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+  <If "%{REQUEST_URI} =~ m#\.html$|/$#">
+    Header set Cache-Control "no-cache"
+  </If>
+</IfModule>

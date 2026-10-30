@@ -1,0 +1,30 @@
+---
+// /account/guide/{slug}/{section}/ — one static shell, the reader routes inside it (docs/04 § 6:
+// Apache sends every /account/guide/* here; `astro dev` does the same through the rewrite in astro.config).
+// No guide text in this HTML: it is fetched after sign-in (docs/06 § 1).
+// Mounted with preact `render` directly, not as an Astro island: @astrojs/preact 6.1 seeds `vnode.__m`, which Preact 11
+// reads as hydration flags and crashes even for client:only (D-052).
+import Base from '../../../layouts/Base.astro';
+import c from '../../../content/fixtures/public.ru.json';
+import '../../../islands/reader/reader.css';
+
+const districts = c.prepare.districts.map(({ code, name, ko, lat, lon }) => ({ code, name, ko, lat, lon }));
+---
+
+<Base title="Гайд" noindex noDock>
+  <div id="reader" data-districts={JSON.stringify(districts)}></div>
+</Base>
+
+<script>
+  import { h, render } from 'preact';
+  import Reader from '../../../islands/reader/Reader';
+  import type { District } from '../../../islands/reader/types';
+
+  function mount() {
+    const el = document.getElementById('reader');
+    if (!el || el.dataset.mounted) return;
+    el.dataset.mounted = '1';
+    render(h(Reader, { districts: JSON.parse(el.dataset.districts ?? '[]') as District[] }), el);
+  }
+  document.addEventListener('astro:page-load', mount);
+</script>

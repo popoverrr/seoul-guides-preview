@@ -1,0 +1,234 @@
+---
+// «Мои гайды» (docs/01 § 3, C2): the guides in this account first, «продолжить чтение» on top, the rest as «можно докупить».
+// The page is static; which guides are owned comes from /api/me/guides at runtime (no paid text here).
+import Base from '../../layouts/Base.astro';
+import TopBar from '../../components/TopBar.astro';
+import Photo from '../../components/Photo.astro';
+import guides from '../../data/guides.json';
+import { nb } from '../../lib/typo';
+---
+
+<Base title="Мои гайды" noindex noDock>
+  <TopBar />
+  <main id="main" class="acc wrap" data-account>
+    <div class="acc__head">
+      <h1 class="t-head">Мои гайды</h1>
+      <p class="acc__hello" data-hello></p>
+    </div>
+
+    <a class="acc__resume" href="#" data-resume hidden>
+      <span class="acc__resume-k">Продолжить чтение</span>
+      <span class="acc__resume-v" data-resume-title></span>
+    </a>
+
+    <p class="acc__state" data-state>Загружаем ваши гайды…</p>
+
+    <ul class="acc__list" role="list" data-owned></ul>
+
+    <section class="acc__more" data-more hidden aria-labelledby="h-more">
+      <h2 class="t-name" id="h-more">Можно докупить</h2>
+      <ul class="acc__list acc__list--more" role="list" data-others></ul>
+    </section>
+
+    <nav class="acc__nav" aria-label="Кабинет">
+      <a href="/account/settings/">Пароль и устройства</a>
+      <button type="button" data-logout>Выйти</button>
+    </nav>
+  </main>
+
+  {
+    guides.map((g) => (
+      <template data-guide={g.slug}>
+        <li class="gc" style={`--patch:var(${g.patch})`}>
+          <a class="gc__link" href="#">
+            <span class="gc__img">
+              <Photo slot={`guide-${g.slug}`} ratio="4 / 5" alt="" sizes="(min-width: 1024px) 260px, 44vw" />
+              <span class="gc__ko t-emblem" lang="ko" aria-hidden="true">
+                {g.emblem}
+              </span>
+            </span>
+            <span class="gc__name">{g.title_ru}</span>
+            <span class="gc__line">{nb(g.line_ru)}</span>
+          </a>
+        </li>
+      </template>
+    ))
+  }
+</Base>
+
+<script>
+  import { api, href, humanError, me, toLogin, type MyGuide } from '../../lib/api';
+
+  async function init() {
+    const root = document.querySelector<HTMLElement>('[data-account]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    const state = root.querySelector<HTMLElement>('[data-state]')!;
+    try {
+      const user = await me();
+      if (!user) return toLogin();
+      const hello = root.querySelector<HTMLElement>('[data-hello]')!;
+      hello.textContent = user.name ? `${user.name}, гайды открываются здесь и остаются у вас навсегда.` : 'Гайды открываются здесь и остаются у вас навсегда.';
+
+      const { guides } = await api<{ guides: MyGuide[] }>('GET', '/me/guides');
+      const card = (g: MyGuide, owned: boolean) => {
+        const tpl = document.querySelector<HTMLTemplateElement>(`template[data-guide="${g.slug}"]`);
+        const li = tpl?.content.firstElementChild?.cloneNode(true) as HTMLElement | undefined;
+        if (!li) return null;
+        li.querySelector<HTMLAnchorElement>('a')!.href = owned ? href(`/account/guide/${g.slug}/`) : href(`/guides/${g.slug}/`);
+        if (!owned) li.classList.add('gc--locked');
+        return li;
+      };
+      const owned = guides.filter((g) => g.owned);
+      const others = guides.filter((g) => !g.owned);
+      root.querySelector('[data-owned]')!.replaceChildren(...owned.map((g) => card(g, true)).filter((x): x is HTMLElement => !!x));
+      root.querySelector('[data-others]')!.replaceChildren(...others.map((g) => card(g, false)).filter((x): x is HTMLElement => !!x));
+      root.querySelector<HTMLElement>('[data-more]')!.hidden = others.length === 0;
+      state.textContent = owned.length ? '' : 'В кабинете пока нет гайдов. Если вы уже оплатили, напишите нам в WhatsApp.';
+      state.hidden = owned.length > 0;
+
+      // «продолжить чтение»: the last place the reader stopped (islands/reader keeps it)
+      try {
+        const last = JSON.parse(localStorage.getItem('sn-last') ?? 'null') as { slug: string; section: string; title: string } | null;
+        if (last && owned.some((g) => g.slug === last.slug)) {
+          const a = root.querySelector<HTMLAnchorElement>('[data-resume]')!;
+          a.href = href(`/account/guide/${last.slug}/${last.section}/`);
+          a.querySelector('[data-resume-title]')!.textContent = last.title;
+          a.hidden = false;
+        }
+      } catch {
+        /* storage off: no resume link */
+      }
+    } catch (e) {
+      state.textContent = humanError(e);
+    }
+
+    root.querySelector('[data-logout]')?.addEventListener('click', async () => {
+      await api('POST', '/auth/logout').catch(() => {});
+      location.replace(href('/login/'));
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+  .acc {
+    min-height: 100svh;
+    padding-top: calc(var(--bar-h) + 24px);
+    padding-bottom: 56px;
+  }
+
+  .acc__hello {
+    margin-top: 8px;
+    color: var(--ink-2);
+  }
+
+  .acc__resume {
+    display: grid;
+    gap: 2px;
+    margin-top: 18px;
+    padding: 14px 18px;
+    border-radius: var(--r-l);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .acc__resume-k {
+    font-size: var(--s-small);
+    color: #c9c2b6;
+  }
+
+  .acc__resume-v {
+    font-family: var(--f-display);
+    font-size: 1.25rem;
+  }
+
+  .acc__state {
+    margin-top: 18px;
+    color: var(--ink-2);
+  }
+
+  .acc__state[hidden] {
+    display: none;
+  }
+
+  .acc__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .acc__list :global(.gc__link) {
+    display: grid;
+    gap: 4px;
+    padding: 8px 8px 12px;
+    border-radius: var(--r-m);
+    background: var(--paper);
+  }
+
+  .acc__list :global(.gc__img) {
+    position: relative;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .acc__list :global(.gc__img .photo) {
+    border-radius: var(--r-s);
+  }
+
+  .acc__list :global(.gc__ko) {
+    position: absolute;
+    right: 8px;
+    bottom: 4px;
+    font-size: 1.75rem;
+    color: #fff;
+  }
+
+  .acc__list :global(.gc__name) {
+    font-family: var(--f-display);
+    font-size: 1.0625rem;
+    line-height: 1.1;
+  }
+
+  .acc__list :global(.gc__line) {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+
+  .acc__list :global(.gc--locked .gc__img) {
+    opacity: 0.55;
+  }
+
+  .acc__more {
+    margin-top: 36px;
+  }
+
+  .acc__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    margin-top: 40px;
+    font-size: 0.9375rem;
+  }
+
+  .acc__nav a,
+  .acc__nav button {
+    min-height: 44px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    color: var(--ink-2);
+  }
+
+  @media (min-width: 1024px) {
+    .acc {
+      max-width: 1100px;
+    }
+
+    .acc__list {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+  }
+</style>

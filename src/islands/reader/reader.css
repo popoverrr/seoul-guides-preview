@@ -1,0 +1,740 @@
+/* Reader (P4): a phone held in one hand in a Seoul street. Paper page on plaster, guide colour as the thread,
+   TabBar at the thumb, night reading on demand. Tokens only (docs/02); everything rounded (D-038). */
+
+.rd {
+  --rd-bg: var(--plaster);
+  --rd-card: var(--paper);
+  --rd-ink: var(--ink);
+  --rd-mute: var(--ink-2);
+
+  position: relative;
+  min-height: 100svh;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  background: var(--rd-bg);
+  color: var(--rd-ink);
+}
+
+html[data-reader-night] .rd {
+  --rd-bg: var(--night);
+  --rd-card: #1d1c19;
+  --rd-ink: var(--night-ink);
+  --rd-mute: var(--night-mute);
+}
+
+html[data-reader-night] body {
+  background: var(--night);
+}
+
+/* watermark: a fixed layer above the text, never catches taps */
+.rd__wm {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  opacity: 0.06;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+html[data-reader-night] .rd__wm {
+  filter: invert(1);
+  opacity: 0.08;
+}
+
+/* --- ReaderBar --- */
+.rbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 6px 12px 8px;
+  padding-top: max(6px, env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--rd-bg) 94%, transparent);
+}
+
+.rbar__back {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+}
+
+.rbar__mid {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.rbar__guide {
+  overflow: hidden;
+  font-family: var(--f-display);
+  font-size: 1.0625rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rbar__pos {
+  font-size: 0.75rem;
+  color: var(--rd-mute);
+}
+
+.rbar__night {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--rd-ink) 30%, transparent);
+  border-radius: var(--r-pill);
+  font-size: 0.8125rem;
+}
+
+.rbar__progress {
+  position: absolute;
+  inset: auto 12px 0;
+  height: 3px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--rd-ink) 10%, transparent);
+  overflow: hidden;
+}
+
+.rbar__progress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--patch);
+  transform: scaleX(var(--p));
+  transform-origin: left;
+  transition: transform var(--d-base) var(--ease-tea);
+}
+
+/* --- page --- */
+.rd__main {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 12px var(--gutter) 24px;
+}
+
+.rd__loading,
+.rd__msg {
+  padding: 32px 0;
+  color: var(--rd-mute);
+}
+
+.rd--msg {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 14px;
+  padding: 0 var(--gutter);
+}
+
+.rd__btn {
+  min-height: 48px;
+  padding: 14px 22px;
+  border-radius: var(--r-pill);
+  background: var(--green);
+  color: var(--green-ink);
+  font-weight: 500;
+}
+
+.rd__link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.rd__emblem {
+  font-family: var(--f-ko);
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--patch);
+}
+
+.rd__title {
+  margin-top: 6px;
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 1.6rem + 2vw, 3rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.rd__updated {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--rd-mute);
+}
+
+.rd__intro {
+  margin-top: 12px;
+  font-size: var(--s-lead);
+  line-height: 1.45;
+}
+
+/* markdown */
+.md p + p,
+.md ul,
+.md ol {
+  margin-top: 0.7em;
+}
+
+.md ul,
+.md ol {
+  padding-left: 1.2em;
+}
+
+.md li + li {
+  margin-top: 0.3em;
+}
+
+.md a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- chips (category filter) --- */
+.chips {
+  display: flex;
+  gap: 8px;
+  margin: 18px calc(var(--gutter) * -1) 4px;
+  padding: 0 var(--gutter) 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: none;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid color-mix(in srgb, var(--rd-ink) 30%, transparent);
+  border-radius: var(--r-pill);
+  font-size: 0.9375rem;
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--rd-ink);
+  background: var(--rd-ink);
+  color: var(--rd-bg);
+}
+
+/* --- blocks --- */
+.rd__section > * + * {
+  margin-top: 18px;
+}
+
+.b-heading {
+  margin-top: 30px;
+  font-family: var(--f-display);
+  font-size: 1.625rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.b-heading__ko {
+  margin-left: 10px;
+  font-family: var(--f-ko);
+  font-size: 1.125rem;
+  color: var(--patch);
+}
+
+.b-text {
+  font-size: var(--s-body);
+  line-height: 1.55;
+}
+
+.b-tip {
+  padding: 14px 16px;
+  border-radius: var(--r-m);
+  background: var(--rd-card);
+}
+
+.b-tip__k,
+.pc__tip-k,
+.b-offer__k {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--f-hand);
+  font-size: 1.25rem;
+  color: var(--hand);
+}
+
+html[data-reader-night] .b-tip__k,
+html[data-reader-night] .pc__tip-k {
+  color: var(--glow);
+}
+
+.b-callout {
+  padding: 14px 16px;
+  border-radius: var(--r-m);
+  background: color-mix(in srgb, var(--tape) 22%, var(--rd-card));
+}
+
+.b-callout--warn {
+  background: color-mix(in srgb, var(--seal) 14%, var(--rd-card));
+}
+
+.b-offer {
+  padding: 14px 16px;
+  border: 1px dashed color-mix(in srgb, var(--rd-ink) 35%, transparent);
+  border-radius: var(--r-m);
+}
+
+.b-offer__note,
+.b-table__mute {
+  font-size: 0.8125rem;
+  color: var(--rd-mute);
+}
+
+.b-gallery__row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 86%;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.b-gallery__row > * {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-m);
+  scroll-snap-align: start;
+  user-select: none;
+}
+
+.b-gallery figcaption {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: var(--rd-mute);
+}
+
+.b-items,
+.b-check {
+  display: grid;
+  gap: 8px;
+  padding-left: 1.1em;
+}
+
+.b-route {
+  display: grid;
+  gap: 12px;
+  padding-left: 1.3em;
+}
+
+.b-divider {
+  height: 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--rd-ink) 16%, transparent);
+}
+
+.b-facts {
+  display: grid;
+  gap: 8px;
+}
+
+.b-facts dt {
+  font-size: 0.8125rem;
+  color: var(--rd-mute);
+}
+
+.b-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.b-table td {
+  padding: 8px 6px 8px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--rd-ink) 12%, transparent);
+  vertical-align: top;
+}
+
+.b-table__num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.b-group h3,
+.b-product strong {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+}
+
+.b-places {
+  display: grid;
+  gap: 12px;
+}
+
+/* --- PlaceCard --- */
+.pc {
+  display: grid;
+  gap: 12px;
+  padding: 12px 12px 14px;
+  border-radius: var(--r-l);
+  background: var(--rd-card);
+  scroll-margin-top: 72px;
+  user-select: none; /* docs/06 § 2: soft measure; the address has its own copy button */
+}
+
+.pc__gallery {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--r-m);
+}
+
+.pc__gallery img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  scroll-snap-align: start;
+}
+
+.pc__head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.pc__n {
+  font-family: var(--f-display);
+  font-size: 2.5rem;
+  line-height: 0.9;
+  color: var(--patch);
+}
+
+.pc__cat {
+  font-size: 0.75rem;
+  color: var(--rd-mute);
+}
+
+.pc__name {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.pc__src {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: var(--rd-mute);
+}
+
+.pc__ko {
+  margin-top: 2px;
+  font-family: var(--f-ko);
+  font-size: 1rem;
+}
+
+.pc__text {
+  line-height: 1.5;
+}
+
+.pc__data {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9375rem;
+}
+
+.pc__data > div {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 10px;
+}
+
+.pc__data dt {
+  color: var(--rd-mute);
+}
+
+.pc__addr {
+  user-select: text;
+}
+
+.pc__badge {
+  justify-self: start;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--naver) 14%, transparent);
+  color: #03823b;
+  font-size: 0.75rem;
+}
+
+html[data-reader-night] .pc__badge {
+  color: var(--naver);
+}
+
+.pc__tip {
+  padding: 10px 12px;
+  border-radius: var(--r-m);
+  background: color-mix(in srgb, var(--rd-ink) 5%, transparent);
+}
+
+.pc__actions {
+  display: grid;
+  gap: 8px;
+}
+
+.pc__naver,
+.pc__copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: var(--r-pill);
+  font-weight: 500;
+}
+
+.pc__naver {
+  background: var(--naver);
+  color: #fff;
+}
+
+.pc__copy {
+  border: 1px solid color-mix(in srgb, var(--rd-ink) 35%, transparent);
+}
+
+/* --- pager, panels --- */
+.rd__pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.rd__pager button {
+  min-height: 48px;
+  padding: 0 4px;
+  color: var(--rd-mute);
+}
+
+.rd__pager .rd__next {
+  padding: 0 20px;
+  border-radius: var(--r-pill);
+  background: var(--green);
+  color: var(--green-ink);
+  font-weight: 500;
+}
+
+.toc {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.toc__i {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 14px;
+  border-radius: var(--r-m);
+  background: var(--rd-card);
+  text-align: left;
+}
+
+.toc__i--on {
+  outline: 2px solid var(--patch);
+}
+
+.toc__n {
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+  color: var(--patch);
+}
+
+.toc__night {
+  padding: 1px 9px;
+  border-radius: var(--r-pill);
+  background: var(--night);
+  color: var(--glow);
+  font-size: 0.75rem;
+}
+
+.rd__search {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 16px;
+  padding: 0 18px;
+  border: 1px solid color-mix(in srgb, var(--rd-ink) 30%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--rd-card);
+  color: var(--rd-ink);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.found {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.found a {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: var(--r-m);
+  background: var(--rd-card);
+}
+
+.found span {
+  font-size: 0.8125rem;
+  color: var(--rd-mute);
+}
+
+/* --- map tab --- */
+.rmap__svg {
+  width: 100%;
+  height: auto;
+  margin-top: 14px;
+  border-radius: var(--r-l);
+  background: var(--rd-card);
+}
+
+/* same drawing as InkMap on /prepare/: lines, not shapes (only parks are filled) */
+.rmap__svg path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rmap__svg .m-parks {
+  fill: color-mix(in srgb, var(--p-culture) 26%, transparent);
+  stroke: none;
+}
+
+.rmap__svg .m-roads {
+  stroke: color-mix(in srgb, var(--rd-ink) 14%, transparent);
+  stroke-width: 2.2;
+}
+
+.rmap__svg .m-streams {
+  stroke: #a9c6c3;
+  stroke-width: 1.4;
+}
+
+.rmap__svg .m-river {
+  stroke: #b9d1cd;
+}
+
+.rmap__dot {
+  fill: var(--rd-card);
+  stroke: var(--patch);
+  stroke-width: 4;
+}
+
+.rmap__dot--on {
+  fill: var(--patch);
+}
+
+.rmap__credit,
+.rmap__empty {
+  margin-top: 6px;
+  font-size: 0.6875rem;
+  color: var(--rd-mute);
+}
+
+.rmap__list {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.rmap__name {
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+}
+
+.rmap__ko {
+  font-family: var(--f-ko);
+  font-size: 0.9375rem;
+  color: var(--rd-mute);
+}
+
+.rmap__sec {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 6px;
+  padding: 0 14px;
+  border-radius: var(--r-m);
+  background: var(--rd-card);
+  text-align: left;
+}
+
+.rmap__sec--on {
+  outline: 2px solid var(--patch);
+}
+
+/* --- TabBar at the thumb --- */
+.tabbar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 25;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--rd-bg) 96%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--rd-ink) 12%, transparent); /* docs/02 § 7 TabBar: «линия сверху» */
+}
+
+.tabbar__i {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-height: 52px;
+  padding-top: 4px;
+  border-radius: var(--r-m);
+  color: var(--rd-mute);
+  font-size: 0.6875rem;
+}
+
+.tabbar__i svg path {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tabbar__i[aria-pressed='true'] {
+  color: var(--rd-ink);
+  background: color-mix(in srgb, var(--patch) 16%, transparent);
+}
+
+@media (min-width: 1024px) {
+  .tabbar {
+    inset: auto 50% 16px auto;
+    width: 520px;
+    border-radius: var(--r-pill);
+    transform: translateX(50%);
+    box-shadow: 0 6px 24px rgb(0 0 0 / 0.12); /* stylelint-disable-line declaration-property-value-disallowed-list -- floating bar */
+  }
+
+  .rd {
+    padding-bottom: 110px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rbar__progress::after {
+    transition: none;
+  }
+}

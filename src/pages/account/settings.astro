@@ -1,0 +1,234 @@
+---
+// Пароль и устройства (docs/01 § 3, docs/06 § 2): where you are signed in, «выйти на других устройствах», change password.
+import Base from '../../layouts/Base.astro';
+import TopBar from '../../components/TopBar.astro';
+---
+
+<Base title="Пароль и устройства" noindex noDock>
+  <TopBar />
+  <main id="main" class="set wrap" data-settings>
+    <a class="set__back" href="/account/">← Мои гайды</a>
+    <h1 class="t-head">Пароль и устройства</h1>
+
+    <section class="set__card" aria-labelledby="h-dev">
+      <h2 class="t-name" id="h-dev">Где вы вошли</h2>
+      <p class="set__note" data-max></p>
+      <ul class="set__devices" role="list" data-devices></ul>
+      <button class="set__btn" type="button" data-others hidden>Выйти на других устройствах</button>
+      <p class="set__msg" role="status" data-dev-msg hidden></p>
+    </section>
+
+    <form class="set__card" aria-labelledby="h-pw" data-password novalidate>
+      <h2 class="t-name" id="h-pw">Сменить пароль</h2>
+      <label class="field">
+        <span class="field__label">Текущий пароль</span>
+        <input class="field__input" name="current" type="password" autocomplete="current-password" required />
+      </label>
+      <label class="field">
+        <span class="field__label">Новый пароль, не короче 10 символов</span>
+        <input class="field__input" name="new" type="password" autocomplete="new-password" minlength="10" required />
+      </label>
+      <button class="set__btn set__btn--go" type="submit">Сохранить пароль</button>
+      <p class="set__msg" role="status" data-pw-msg hidden></p>
+    </form>
+
+    <button class="set__logout" type="button" data-logout>Выйти из кабинета</button>
+  </main>
+</Base>
+
+<script>
+  import { api, href, humanError, me, toLogin } from '../../lib/api';
+
+  interface Session {
+    id: string;
+    device: string;
+    last_seen_at: string;
+    current: boolean;
+  }
+
+  const when = (s: string) =>
+    new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(new Date(s.replace(' ', 'T')));
+
+  async function init() {
+    const root = document.querySelector<HTMLElement>('[data-settings]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    if (!(await me().catch(() => null))) return toLogin();
+
+    const list = root.querySelector<HTMLElement>('[data-devices]')!;
+    const others = root.querySelector<HTMLButtonElement>('[data-others]')!;
+    const devMsg = root.querySelector<HTMLElement>('[data-dev-msg]')!;
+    const load = async () => {
+      const { sessions, max_devices } = await api<{ sessions: Session[]; max_devices: number }>('GET', '/me/sessions');
+      root.querySelector('[data-max]')!.textContent = `Читать можно одновременно на ${max_devices} устройствах. При входе с нового устройства самое давнее выходит само.`;
+      list.replaceChildren(
+        ...sessions.map((s) => {
+          const li = document.createElement('li');
+          li.className = 'set__device';
+          const name = document.createElement('span');
+          name.className = 'set__device-name';
+          name.textContent = s.device + (s.current ? ' · это устройство' : '');
+          const t = document.createElement('span');
+          t.className = 'set__device-time';
+          t.textContent = `был активен ${when(s.last_seen_at)}`;
+          li.append(name, t);
+          if (!s.current) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'set__device-out';
+            b.textContent = 'Выйти';
+            b.addEventListener('click', async () => {
+              await api('DELETE', `/me/sessions/${s.id}`).catch(() => {});
+              await load();
+            });
+            li.append(b);
+          }
+          return li;
+        }),
+      );
+      others.hidden = sessions.filter((s) => !s.current).length === 0;
+    };
+    await load().catch((e) => ((devMsg.textContent = humanError(e)), (devMsg.hidden = false)));
+
+    others.addEventListener('click', async () => {
+      const { signed_out_devices } = await api<{ signed_out_devices: number }>('DELETE', '/me/sessions');
+      devMsg.textContent = signed_out_devices ? 'Готово: на других устройствах вы вышли.' : 'Других устройств нет.';
+      devMsg.hidden = false;
+      await load();
+    });
+
+    const form = root.querySelector<HTMLFormElement>('[data-password]')!;
+    const pwMsg = root.querySelector<HTMLElement>('[data-pw-msg]')!;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const d = new FormData(form);
+      pwMsg.hidden = false;
+      try {
+        await api('POST', '/me/password', { current: String(d.get('current') ?? ''), new: String(d.get('new') ?? '') });
+        form.reset();
+        pwMsg.textContent = 'Пароль сохранён. На других устройствах нужно будет войти заново.';
+        await load();
+      } catch (err) {
+        pwMsg.textContent = humanError(err);
+      }
+    });
+
+    root.querySelector('[data-logout]')?.addEventListener('click', async () => {
+      await api('POST', '/auth/logout').catch(() => {});
+      location.replace(href('/login/'));
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+  .set {
+    display: grid;
+    gap: 14px;
+    max-width: 640px;
+    min-height: 100svh;
+    padding-top: calc(var(--bar-h) + 20px);
+    padding-bottom: 56px;
+  }
+
+  .set__back {
+    justify-self: start;
+    min-height: 44px;
+    align-content: center;
+    color: var(--ink-2);
+  }
+
+  .set__card {
+    display: grid;
+    gap: 12px;
+    padding: 18px;
+    border-radius: var(--r-l);
+    background: var(--paper);
+  }
+
+  .set__note,
+  .set__msg {
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .set__devices {
+    display: grid;
+    gap: 8px;
+  }
+
+  .set__devices :global(.set__device) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 12px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: var(--r-m);
+    background: var(--plaster);
+  }
+
+  .set__devices :global(.set__device-time) {
+    grid-column: 1;
+    font-size: var(--s-small);
+    color: var(--ink-2);
+  }
+
+  .set__devices :global(.set__device-out) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-pill);
+    font-size: var(--s-small);
+  }
+
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .field__label {
+    font-size: var(--s-small);
+    color: var(--ink-2);
+  }
+
+  .field__input {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-m);
+    background: #fff;
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  .field__input:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 1px;
+  }
+
+  .set__btn {
+    min-height: 48px;
+    padding: 0 18px;
+    border: 1px solid var(--ink);
+    border-radius: var(--r-pill);
+    font-weight: 500;
+  }
+
+  .set__btn--go {
+    border-color: var(--green);
+    background: var(--green);
+    color: var(--green-ink);
+  }
+
+  .set__logout {
+    justify-self: start;
+    min-height: 44px;
+    margin-top: 8px;
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
