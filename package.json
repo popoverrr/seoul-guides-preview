@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/rebase.mjs && node scripts/check-dist.mjs",
+    "build": "node scripts/fetch-public.mjs && astro build && node scripts/rebase.mjs && node scripts/check-dist.mjs",
     "preview": "astro preview",
     "check": "astro check && eslint . && stylelint \"src/**/*.{css,astro}\"",
     "format": "prettier --write .",

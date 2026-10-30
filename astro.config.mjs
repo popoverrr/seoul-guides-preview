@@ -50,6 +50,7 @@ export default defineConfig({
               return;
             }
             if (req.url && /^\/account\/guide\/[^?#]+/.test(req.url)) req.url = '/account/guide/';
+            else if (req.url && /^\/admin\/[^?#]+/.test(req.url)) req.url = '/admin/';
             next();
           });
         },

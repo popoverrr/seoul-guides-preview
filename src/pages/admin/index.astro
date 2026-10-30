@@ -1,0 +1,25 @@
+---
+// /admin/… — one static shell, the admin app routes inside it (docs/04 § 6: Apache sends every /admin/* here,
+// `astro dev` does the same in astro.config). Nothing but the shell is in this HTML; data comes from /api/admin/*.
+// Mounted with preact `render` directly for the same reason as the reader (D-052).
+import Base from '../../layouts/Base.astro';
+import '../../islands/admin/admin.css';
+import '../../islands/reader/reader.css';
+---
+
+<Base title="Админка" noindex noDock>
+  <div id="admin"></div>
+</Base>
+
+<script>
+  import { h, render } from 'preact';
+  import Admin from '../../islands/admin/Admin';
+
+  function mount() {
+    const el = document.getElementById('admin');
+    if (!el || el.dataset.mounted) return;
+    el.dataset.mounted = '1';
+    render(h(Admin, {}), el);
+  }
+  document.addEventListener('astro:page-load', mount);
+</script>

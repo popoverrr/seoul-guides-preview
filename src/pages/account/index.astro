@@ -63,6 +63,11 @@ import { nb } from '../../lib/typo';
     const root = document.querySelector<HTMLElement>('[data-account]');
     if (!root || root.dataset.ready) return;
     root.dataset.ready = '1';
+    // the exit works at once, before the page has loaded its data
+    root.querySelector('[data-logout]')?.addEventListener('click', async () => {
+      await api('POST', '/auth/logout').catch(() => {});
+      location.replace(href('/login/'));
+    });
     const state = root.querySelector<HTMLElement>('[data-state]')!;
     try {
       const user = await me();
@@ -103,10 +108,6 @@ import { nb } from '../../lib/typo';
       state.textContent = humanError(e);
     }
 
-    root.querySelector('[data-logout]')?.addEventListener('click', async () => {
-      await api('POST', '/auth/logout').catch(() => {});
-      location.replace(href('/login/'));
-    });
   }
   document.addEventListener('astro:page-load', init);
 </script>

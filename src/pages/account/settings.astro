@@ -53,6 +53,11 @@ import TopBar from '../../components/TopBar.astro';
     const root = document.querySelector<HTMLElement>('[data-settings]');
     if (!root || root.dataset.ready) return;
     root.dataset.ready = '1';
+    // the exit works at once, before the page has loaded its data
+    root.querySelector('[data-logout]')?.addEventListener('click', async () => {
+      await api('POST', '/auth/logout').catch(() => {});
+      location.replace(href('/login/'));
+    });
     if (!(await me().catch(() => null))) return toLogin();
 
     const list = root.querySelector<HTMLElement>('[data-devices]')!;
@@ -113,10 +118,6 @@ import TopBar from '../../components/TopBar.astro';
       }
     });
 
-    root.querySelector('[data-logout]')?.addEventListener('click', async () => {
-      await api('POST', '/auth/logout').catch(() => {});
-      location.replace(href('/login/'));
-    });
   }
   document.addEventListener('astro:page-load', init);
 </script>
